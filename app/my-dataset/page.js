@@ -24,7 +24,7 @@ export default function MyDataset() {
 
     const fetchDatasetList = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/datasets?user_id=${session.user.name}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets?user_id=${session.user.name}`);
             const data = response.data;
             if (!data.error) {
                 const new_data = data.data.map((dataset) => ({ ...dataset, total_size: _.sumBy(dataset.tables, 'table_size') }));
@@ -50,7 +50,7 @@ export default function MyDataset() {
 
     const handleFilterDataset = async (keyword, sort, org, tags, data_lang) => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/datasets?user_id=${session.user.name}&search_keyword=${keyword}&sort_option=${sort}&organizations=${org}&tags=${tags}&data_lang=${data_lang}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets?user_id=${session.user.name}&search_keyword=${keyword}&sort_option=${sort}&organizations=${org}&tags=${tags}&data_lang=${data_lang}`);
             const data = response.data;
             if (!data.error) {
                 const new_data = data.data.map((dataset) => ({ ...dataset, total_size: _.sumBy(dataset.tables, 'table_size') }));

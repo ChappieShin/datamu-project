@@ -61,7 +61,7 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
         };
 
         try {
-            const response = await axios.post(`http://localhost:8000/api/append-table`, body);
+            const response = await axios.post(`${process.env.FASTAPI_PUBLIC_URL}/api/append-table`, body);
             const data = response.data;
             const id = uuidv4();
             setDataset([...dataset, { table_id: id, table_name: `Result Table (${numResultTable})`, data: data }]);
@@ -82,7 +82,7 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
             table_2: dataset.find((table) => (table.table_id === values.table_2)).data,
         };
         try {
-            const response = await axios.post(`http://localhost:8000/api/join-table`, body);
+            const response = await axios.post(`${process.env.FASTAPI_PUBLIC_URL}/api/join-table`, body);
             const data = response.data;
             const id = uuidv4();
             setDataset([...dataset, { table_id: id, table_name: `Result Table (${numResultTable})`, data: data }]);
@@ -103,7 +103,7 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
         };
 
         try {
-            const response = await axios.post(`http://localhost:8000/api/cluster-matching`, body);
+            const response = await axios.post(`${process.env.FASTAPI_PUBLIC_URL}/api/cluster-matching`, body);
             const data = response.data;
             const id = uuidv4();
             setDataset([...dataset, { table_id: id, table_name: `Result Table (${numResultTable})`, data: data }]);
@@ -125,7 +125,7 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
         };
 
         try {
-            const response = await axios.post(`http://localhost:3000/api/tables`, body);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/tables`, body);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);
@@ -147,7 +147,7 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
         };
 
         try {
-            const response = await axios.put(`http://localhost:3000/api/tables/${values.table_id}`, body);
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/tables/${values.table_id}`, body);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);

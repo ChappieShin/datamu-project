@@ -34,7 +34,7 @@ export default function Dataset({ params }) {
 
     const fetchDatasetData = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/datasets/${params.id}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets/${params.id}`);
             const data = response.data;
             setDatasetData({ ...data.data, total_size: _.sumBy(data.data.tables, 'table_size') });
             setIsLoading(false);

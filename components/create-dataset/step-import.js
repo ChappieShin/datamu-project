@@ -22,7 +22,7 @@ export default function ImportData({ datasetForm, handleForm, nextStep, prevStep
         const dataset_data = { ...datasetForm, owner_id: session.user.name, tables: table_list }
         try {
             setButtonLoading(true);
-            const response = await axios.post('http://localhost:3000/api/datasets', dataset_data);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets`, dataset_data);
             const data = response.data;
             if (!data.error) {
                 handleForm({ ...datasetForm, dataset_id: data.data.insertId });

@@ -16,7 +16,7 @@ export default function PageHeader({ user_id }) {
 
     const handleDeleteUser = async (user_id) => {
         try {
-            const response = await axios.delete(`http://localhost:3000/api/users/${user_id}`);
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${user_id}`);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);

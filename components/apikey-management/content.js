@@ -18,7 +18,7 @@ export default function PageContent() {
 
     const fetchApiKeyList = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/apikeys');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/apikeys`);
             const data = response.data.data.map((key) => ({ ...key, key: key.key_id, status: new Date() > new Date(key.expired_date) ? 'Expired' : 'Active' }));
             setApiKeyList(data);
         } catch (error) {
@@ -32,7 +32,7 @@ export default function PageContent() {
 
     const handleDeleteApiKey = async (key_id) => {
         try {
-            const response = await axios.delete(`http://localhost:3000/api/apikeys/${key_id}`);
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/apikeys/${key_id}`);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);

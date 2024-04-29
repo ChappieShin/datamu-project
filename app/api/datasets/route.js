@@ -99,7 +99,7 @@ export async function GET(request) {
         let datasets = [];
         const promises = results_dataset.map(async (dataset) => {
             const [result_table] = await db.query(query_table, [dataset.dataset_id]);
-            const response = await axios.get(`http://localhost:3000/api/tables?dataset_id=${dataset.dataset_id}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tables?dataset_id=${dataset.dataset_id}`);
             datasets.push({ ...dataset, ...result_table[0], tables: response.data.data });
         });
 
@@ -188,7 +188,7 @@ export async function POST(request) {
         const promises_table = tables.map(async (table) => {
             const body = { ...table, dataset_id: results.insertId };
             try {
-                await axios.post('http://localhost:3000/api/tables', body);
+                await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/tables`, body);
             } catch (error) {
                 console.error('Error inserting table data', error);
                 throw error;

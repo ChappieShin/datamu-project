@@ -10,7 +10,7 @@ export default function TableHeader({ setDatasetList }) {
 
     const handleSearchDataset = async (keyword) => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/datasets?search_keyword=${keyword}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets?search_keyword=${keyword}`);
             const data = response.data;
             if (!data.error) {
                 setDatasetList(data.data);

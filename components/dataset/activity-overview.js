@@ -20,7 +20,7 @@ export default function ActivityOverview({ dataset_id }) {
 
     const fetchViewData = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/logs/${dataset_id}?log_type=VIEW`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/logs/${dataset_id}?log_type=VIEW`);
             console.log(response)
             const data = response.data;
             setViewData(data.data);
@@ -32,7 +32,7 @@ export default function ActivityOverview({ dataset_id }) {
 
     const fetchExportData = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/logs/${dataset_id}?log_type=EXPORT`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/logs/${dataset_id}?log_type=EXPORT`);
             const data = response.data;
             setExcelData(data.data.filter((d) => (d.export_format === 'xlsx')));
             setCsvData(data.data.filter((d) => (d.export_format === 'csv')));

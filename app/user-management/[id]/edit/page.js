@@ -13,7 +13,7 @@ export default function EditUser({ params }) {
 
     const fetchUserData = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/users/${params.id}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${params.id}`);
             const data = response.data;
             if (!data.error) {
                 setUserData(data.data[0]);

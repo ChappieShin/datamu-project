@@ -13,7 +13,7 @@ const { Text } = Typography;
 export default function DatasetCard({ dataset, fetchDatasetList }) {
     const handleDeleteDataset = async (dataset_id) => {
         try {
-            const response = await axios.delete(`http://localhost:3000/api/datasets/${dataset_id}`);
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets/${dataset_id}`);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);

@@ -24,7 +24,7 @@ export default function PageContent() {
 
     const fetchDatasetList = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/datasets`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets`);
             const data = response.data;
             const new_data = data.data.map((dataset) => ({ ...dataset, key: dataset.dataset_id, total_size: _.sumBy(dataset.tables, 'table_size') }));
             setDatasetList(new_data);
@@ -35,7 +35,7 @@ export default function PageContent() {
 
     const fetchFacultyOptions = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/faculties');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/faculties`);
             const data = response.data;
             setFacultyOptions(data.data);
         } catch (error) {
@@ -45,7 +45,7 @@ export default function PageContent() {
 
     const fetchTagOptions = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/tags');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tags`);
             const data = response.data;
             setTagOptions(data.data);
         } catch (error) {
@@ -61,7 +61,7 @@ export default function PageContent() {
 
     const handleDeleteDataset = async (dataset_id) => {
         try {
-            const response = await axios.delete(`http://localhost:3000/api/datasets/${dataset_id}`);
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets/${dataset_id}`);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);

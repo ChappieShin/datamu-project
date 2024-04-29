@@ -16,7 +16,7 @@ export default function PageContent({ tag }) {
     const handleFinish = async (values) => {
         try {
             setButtonLoading(true);
-            const response = await axios.put(`http://localhost:3000/api/tags/${tag.tag_id}`, values);
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/tags/${tag.tag_id}`, values);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);

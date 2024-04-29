@@ -24,7 +24,7 @@ export default function ExportDataset({ params }) {
 
     const fetchDatasetData = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/datasets/${params.id}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets/${params.id}`);
             const data = response.data;
             if (!data.error) {
                 setDatasetData(data.data);

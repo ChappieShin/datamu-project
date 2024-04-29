@@ -18,7 +18,7 @@ export default function PageContent() {
 
     const fetchFacultyOptions = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/faculties');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/faculties`);
             const data = response.data;
             setFacultyOptions(data.data);
         } catch (error) {
@@ -32,7 +32,7 @@ export default function PageContent() {
 
     const handleFacultyChange = async (value) => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/units?faculty_id=${value}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/units?faculty_id=${value}`);
             const data = response.data;
             setUnitOptions(data.data);
             setDivisionOptions([]);
@@ -44,7 +44,7 @@ export default function PageContent() {
 
     const handleUnitChange = async (value) => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/divisions?unit_id=${value}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/divisions?unit_id=${value}`);
             const data = response.data;
             setDivisionOptions(data.data);
             form.resetFields(['division_id']);
@@ -60,7 +60,7 @@ export default function PageContent() {
         }
         try {
             setButtonLoading(true);
-            const response = await axios.post('http://localhost:3000/api/users', values);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/users`, values);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);
@@ -170,8 +170,8 @@ export default function PageContent() {
                         <Select
                             placeholder='Select a role'
                             options={[
-                                {label: 'Admin', value: 'admin'},
-                                {label: 'Staff', value: 'staff'}
+                                {label: 'Admin', value: 'Admin'},
+                                {label: 'Staff', value: 'Staff'}
                             ]}
                             style={{ width: '40%' }}
                         />

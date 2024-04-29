@@ -16,7 +16,7 @@ export default function DonutCard() {
     const fetchCountDataset = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get(`http://localhost:3000/api/datasets`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets`);
             const data = response.data;
             setTotalDataset(data.data.length);
 
@@ -33,7 +33,7 @@ export default function DonutCard() {
     const fetchFacultyCountData = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get(`http://localhost:3000/api/faculties?count_datasets=true`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/faculties?count_datasets=true`);
             const data = response.data;
             setFacultyCountData(data.data.filter((faculty) => (faculty['Number of dataset(s)'] > 0)));
         } catch (error) {
@@ -46,7 +46,7 @@ export default function DonutCard() {
     const fetchTagCountData = async () => {
         try {
             setIsLoading(true);
-            const response = await axios.get(`http://localhost:3000/api/tags`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tags`);
             const data = response.data;
             setTagCountData(data.data.filter((tag) => (tag['Number of dataset(s)'] > 0)));
         } catch (error) {

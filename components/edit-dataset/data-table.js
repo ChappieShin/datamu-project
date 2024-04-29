@@ -33,7 +33,7 @@ export default function DataTable({ dataset, fetchDatasetData }) {
         };
 
         try {
-            const response = await axios.post(`http://localhost:3000/api/tables`, table);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/tables`, table);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);
@@ -90,7 +90,7 @@ export default function DataTable({ dataset, fetchDatasetData }) {
         
         try {
             setButtonLoading(true);
-            const response = await axios.put(`http://localhost:3000/api/tables/${table_id}`, table);
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/tables/${table_id}`, table);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);
@@ -108,7 +108,7 @@ export default function DataTable({ dataset, fetchDatasetData }) {
 
     const handleDeleteDataTable = async (table_id) => {
         try {
-            const response = await axios.delete(`http://localhost:3000/api/tables/${table_id}`);
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/tables/${table_id}`);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);

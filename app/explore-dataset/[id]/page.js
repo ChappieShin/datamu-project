@@ -36,7 +36,7 @@ export default function Dataset({ params }) {
 
     const fetchDatasetData = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/datasets/${params.id}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets/${params.id}`);
             const data = response.data;
             setDatasetData({ ...data.data, total_size: _.sumBy(data.data.tables, 'table_size') });
             setIsLoading(false);
@@ -48,7 +48,7 @@ export default function Dataset({ params }) {
     const fetchLogView = async () => {
         try {
             const body = { dataset_id: params.id, user_id: session.user.name }
-            await axios.post(`http://localhost:3000/api/logs?log_type=VIEW`, body);
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/logs?log_type=VIEW`, body);
         } catch (error) {
             console.log('Error', error);
         }

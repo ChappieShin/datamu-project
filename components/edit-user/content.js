@@ -19,7 +19,7 @@ export default function PageContent({ user }) {
 
     const fetchFacultyOptions = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/faculties');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/faculties`);
             const data = response.data;
             setFacultyOptions(data.data);
         } catch (error) {
@@ -29,7 +29,7 @@ export default function PageContent({ user }) {
 
     const fetchUnitOptions = async (faculty_id) => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/units?faculty_id=${faculty_id}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/units?faculty_id=${faculty_id}`);
             const data = response.data;
             setUnitOptions(data.data);
         } catch (error) {
@@ -39,7 +39,7 @@ export default function PageContent({ user }) {
 
     const fetchDivisionOptions = async (unit_id) => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/divisions?unit_id=${unit_id}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/divisions?unit_id=${unit_id}`);
             const data = response.data;
             setDivisionOptions(data.data);
         } catch (error) {
@@ -55,7 +55,7 @@ export default function PageContent({ user }) {
 
     const handleFacultyChange = async (value) => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/units?faculty_id=${value}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/units?faculty_id=${value}`);
             const data = response.data;
             setUnitOptions(data.data);
             setDivisionOptions([]);
@@ -67,7 +67,7 @@ export default function PageContent({ user }) {
 
     const handleUnitChange = async (value) => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/divisions?unit_id=${value}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/divisions?unit_id=${value}`);
             const data = response.data;
             setDivisionOptions(data.data);
             form.setFieldsValue({ division_id: undefined });
@@ -79,7 +79,7 @@ export default function PageContent({ user }) {
     const handleFinish = async (values) => {
         try {
             setButtonLoading(true);
-            const response = await axios.put(`http://localhost:3000/api/users/${user.user_id}`, values);
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${user.user_id}`, values);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);

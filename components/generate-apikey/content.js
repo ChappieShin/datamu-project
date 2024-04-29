@@ -22,7 +22,7 @@ export default function PageContent({ user_id }) {
 
     const fetchUserOptions = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/users');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users`);
             const data = response.data;
             setUserOptions(data.data);
         } catch (error) {
@@ -56,7 +56,7 @@ export default function PageContent({ user_id }) {
 
         try {
             setButtonLoading(true);
-            const response = await axios.post('http://localhost:3000/api/apikeys', body);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/apikeys`, body);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);

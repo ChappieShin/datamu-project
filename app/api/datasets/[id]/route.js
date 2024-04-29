@@ -30,7 +30,7 @@ export async function GET(request, { params }) {
 
         let dataset = {};
         try {
-            const response = await axios.get(`http://localhost:3000/api/tables?dataset_id=${params.id}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tables?dataset_id=${params.id}`);
             dataset = { ...results_dataset[0], ...results_table[0], tables: response.data.data };
         } catch (error) {
             console.error('Error getting table data', error);

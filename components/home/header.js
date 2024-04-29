@@ -20,7 +20,7 @@ export default function PageHeader({ user_id }) {
     
     const fetchUserData = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/users/${user_id}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${user_id}`);
             const data = response.data;
             setUserData(data.data[0]);
         } catch (error) {
@@ -30,7 +30,7 @@ export default function PageHeader({ user_id }) {
 
     const fetchDatasetData = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/datasets`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets`);
             const data= response.data;
             setNumOwnedDataset(data.data.filter((dataset) => (dataset.owner_id === user_id)).length);
             setNumSharedDataset(data.data.filter((dataset) => (dataset.owner_id !== user_id && dataset.permission_type === 'Public')).length);

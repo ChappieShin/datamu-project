@@ -16,7 +16,7 @@ export default function PageContent({ datasetList, fetchDatasetList, organizatio
 
     const fetchFacultyOptions = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/faculties?count_datasets=true');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/faculties?count_datasets=true`);
             const data = response.data;
             setFacultyOptions(data.data);
         } catch (error) {
@@ -26,7 +26,7 @@ export default function PageContent({ datasetList, fetchDatasetList, organizatio
 
     const fetchTagOptions = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/tags');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tags`);
             const data = response.data;
             setTagOptions(data.data);
         } catch (error) {
@@ -36,7 +36,7 @@ export default function PageContent({ datasetList, fetchDatasetList, organizatio
 
     const fetchDataLangOptions = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/data_lang');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/data_lang`);
             const data = response.data;
             setDataLangOptions(data.data);
         } catch (error) {

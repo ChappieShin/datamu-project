@@ -19,7 +19,7 @@ export default function PageContent({ dataset, user_id }) {
     const fetchLogExport = async (export_format, status) => {
         try {
             const body = { dataset_id: dataset.dataset_id, user_id: user_id, detail: export_format, status: status }
-            await axios.post(`http://localhost:3000/api/logs?log_type=EXPORT`, body);
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/logs?log_type=EXPORT`, body);
         } catch (error) {
             console.log('Error', error);
         }
@@ -27,7 +27,7 @@ export default function PageContent({ dataset, user_id }) {
 
     const handleFinish = async (values) => {
         if (values.export_format === 'api') {
-            setApiLink(`http://localhost:3000/api/export?user_id=${user_id}&dataset_id=${dataset.dataset_id}&table_ids=${values.tables}&api_key=<Your API Key>`);
+            setApiLink(`${process.env.NEXT_PUBLIC_API_URL}/api/export?user_id=${user_id}&dataset_id=${dataset.dataset_id}&table_ids=${values.tables}&api_key=<Your API Key>`);
             return;
         }
         try {
@@ -35,7 +35,7 @@ export default function PageContent({ dataset, user_id }) {
             if (values.export_format === 'xlsx') {
                 const workbook = XLSX.utils.book_new();
                 const promises = values.tables.map(async (table_id) => {
-                    const response = await axios.get(`http://localhost:3000/api/tables/${table_id}`);
+                    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tables/${table_id}`);
                     const data = response.data;
                     const worksheet = XLSX.utils.json_to_sheet(data.data.data);
                     XLSX.utils.book_append_sheet(workbook, worksheet, data.data.table_name);
@@ -56,7 +56,7 @@ export default function PageContent({ dataset, user_id }) {
             else if (values.export_format === 'csv') {
                 const zip = new JSZip();
                 const promises = values.tables.map(async (table_id) => {
-                    const response = await axios.get(`http://localhost:3000/api/tables/${table_id}`);
+                    const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tables/${table_id}`);
                     const data = response.data;
                     const worksheet = XLSX.utils.json_to_sheet(data.data.data);
                     const csv_data = XLSX.utils.sheet_to_csv(worksheet);

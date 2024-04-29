@@ -17,7 +17,7 @@ export default function PageContent() {
 
     const fetchTagList = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/tags');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tags`);
             const data = response.data.data.map((tag) => ({ ...tag, key: tag.tag_id }));
             setTagList(data);
         } catch (error) {
@@ -31,7 +31,7 @@ export default function PageContent() {
 
     const handleDeleteTag = async (tag_id) => {
         try {
-            const response = await axios.delete(`http://localhost:3000/api/tags/${tag_id}`);
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/tags/${tag_id}`);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);

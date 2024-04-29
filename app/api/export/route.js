@@ -13,7 +13,7 @@ export async function GET(request) {
     const fetchLogExport = async (detail, status) => {
         try {
             const body = { dataset_id: dataset_id, user_id: user_id, detail: detail, status: status }
-            await axios.post(`http://localhost:3000/api/logs?log_type=EXPORT`, body);
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/logs?log_type=EXPORT`, body);
         } catch (error) {
             console.log('Error', error);
         }

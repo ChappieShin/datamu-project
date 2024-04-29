@@ -17,7 +17,7 @@ export default function PageContent() {
 
     const fetchUserList = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/users');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users`);
             const data = response.data.data.map((user) => ({ ...user, key: user.user_id }));
             setUserList(data);
         } catch (error) {
@@ -31,7 +31,7 @@ export default function PageContent() {
 
     const handleDeleteUser = async (user_id) => {
         try {
-            const response = await axios.delete(`http://localhost:3000/api/users/${user_id}`);
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${user_id}`);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);

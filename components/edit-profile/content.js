@@ -18,7 +18,7 @@ export default function PageContent({ user_id }) {
 
     const fetchUserData = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/users/${user_id}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${user_id}`);
             const data = response.data;
             setUserData(data.data[0]);
             setIsLoading(false);
@@ -48,7 +48,7 @@ export default function PageContent({ user_id }) {
         try {
             body = { ...body, fname: values.fname, lname: values.lname, email: values.email }
             setButtonLoading(true);
-            const response = await axios.put(`http://localhost:3000/api/users/${user_id}`, body);
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${user_id}`, body);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);

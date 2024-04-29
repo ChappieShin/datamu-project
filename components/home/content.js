@@ -18,7 +18,7 @@ export default function PageContent() {
 
     const fetchDatasetList = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/datasets`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets`);
             const data = response.data;
             setDatasetList(data.data.slice(0, 3));
         } catch (error) {

@@ -15,7 +15,7 @@ export default function EnterForm({ handleForm, nextStep }) {
 
     const fetchTagOptions = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/tags');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tags`);
             const data = response.data;
             setTagOptions(data.data);
         } catch (error) {
@@ -120,9 +120,9 @@ export default function EnterForm({ handleForm, nextStep }) {
                 <Select
                     placeholder='Select a data language'
                     options={[
-                        {label: 'English', value: 'english'},
-                        {label: 'Thai', value: 'thai'},
-                        {label: 'Others', value: 'others'}
+                        {label: 'English', value: 'English'},
+                        {label: 'Thai', value: 'Thai'},
+                        {label: 'Others', value: 'Others'}
                     ]}
                     style={{ width: '50%' }}
                 />

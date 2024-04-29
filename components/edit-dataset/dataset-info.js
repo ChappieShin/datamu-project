@@ -17,7 +17,7 @@ export default function DatasetInfo({ dataset }) {
 
     const fetchTagOptions = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/tags');
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/tags`);
             const data = response.data;
             setTagOptions(data.data);
             setTagCount(dataset.tags.split(',').length);
@@ -56,7 +56,7 @@ export default function DatasetInfo({ dataset }) {
         };
         try {
             setButtonLoading(true);
-            const response = await axios.put(`http://localhost:3000/api/datasets/${dataset.dataset_id}`, body);
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets/${dataset.dataset_id}`, body);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);

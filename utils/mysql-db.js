@@ -1,14 +1,8 @@
 import mysql from 'mysql2/promise';
 
-const db = mysql.createPool({
-    host: process.env.MYSQL_HOST,
-    user: process.env.MYSQL_USERNAME,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE,
-    connectionLimit: 10,
-    waitForConnections: true,
-    queueLimit: 0
-});
+const uri = `mysql://${process.env.MYSQL_USERNAME}:${process.env.MYSQL_PASSWORD}@${process.env.MYSQL_HOST}:${process.env.MYSQL_PORT}/${process.env.MYSQL_DATABASE}?ssl={"rejectUnauthorized":true}`;
+
+const db = mysql.createPool(uri);
 
 export default async function MySQL_DB() {
     try {

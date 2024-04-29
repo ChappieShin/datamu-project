@@ -17,7 +17,7 @@ export default function PageContent({ user_id }) {
 
     const fetchApiKey = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/apikeys?user_id=${user_id}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/apikeys?user_id=${user_id}`);
             const data = response.data;
             setApiKey(data.data[0]);
         } catch (error) {
@@ -27,7 +27,7 @@ export default function PageContent({ user_id }) {
 
     const fetchUserData = async () => {
         try {
-            const response = await axios.get(`http://localhost:3000/api/users/${user_id}`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${user_id}`);
             const data = response.data;
             setUserData(data.data[0]);
             setIsLoading(false);
