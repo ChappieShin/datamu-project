@@ -259,6 +259,10 @@ export default function ImportData({ datasetForm, handleForm, nextStep, prevStep
         }
     ];
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     return (
         <Form form={form} onFinish={handleFinish}>
             <Space direction='vertical' size='middle'>

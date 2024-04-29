@@ -30,6 +30,10 @@ export default function PageContent() {
         fetchDatasetList();
     }, []);
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     return (
         <Content style={{ padding: '24px' }}>
             <Row gutter={[8, 8]}>

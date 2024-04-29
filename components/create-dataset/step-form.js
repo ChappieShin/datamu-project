@@ -49,6 +49,10 @@ export default function EnterForm({ handleForm, nextStep }) {
         return color;
     }
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     return (
         <Form 
             form={form} 

@@ -226,6 +226,10 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
         formCluster.resetFields(['col']);
     };
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     return (
         <>
             <Row justify='space-between'>

@@ -70,6 +70,10 @@ export default function ExploreDataset() {
         handleFilterDataset(searchKeyword, permissionOption, sortOption, organizations, tags, dataLanguages);
     }, [searchKeyword, permissionOption, sortOption, organizations, tags, dataLanguages]);
     
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+    
     return (
         <>
             <PageHeader 

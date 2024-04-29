@@ -42,6 +42,10 @@ export default function EditDataset({ params }) {
         fetchDatasetData();
     }, []);
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     return (
         isLoading ? <Spin fullscreen /> :
         <>

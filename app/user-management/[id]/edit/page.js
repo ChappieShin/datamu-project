@@ -32,6 +32,10 @@ export default function EditUser({ params }) {
         fetchUserData();
     }, []);
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     return (
         isLoading ? <Spin fullscreen /> :
         <>

@@ -45,6 +45,10 @@ export default function PageHeader({ user_id }) {
         router.refresh();
     }, []);
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     return ( userData &&
         <Header style={{ height: 'auto', padding: '24px', background: 'white' }}>
             <Space direction='vertical' style={{ display: 'flex' }}>

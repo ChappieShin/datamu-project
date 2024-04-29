@@ -27,6 +27,10 @@ export default function DatasetCard({ dataset, fetchDatasetList }) {
         }
     };
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     return (
         <Badge.Ribbon text={dataset.faculty_short} color={dataset.faculty_color} style={{ marginTop: '45px' }}>
             <Card

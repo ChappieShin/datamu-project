@@ -30,6 +30,10 @@ export default function PageHeader({ user_id }) {
         }
     };
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     return (
         <Header style={{ height: 'auto', padding: '24px', background: 'white' }}>
             <Space direction='vertical' style={{ display: 'flex' }}>

@@ -71,6 +71,10 @@ export default function DatasetInfo({ dataset }) {
         }
     };
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     return (
         <Form 
             form={form} 

@@ -141,6 +141,10 @@ export default function DonutCard() {
         // }
     };
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     return (
         <Card
             title='Dataset by'

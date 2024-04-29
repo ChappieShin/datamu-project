@@ -58,6 +58,10 @@ export default function Dataset({ params }) {
         fetchDatasetData();
         fetchLogView();
     }, []);
+
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
     
     return (
         isLoading ? <Spin fullscreen /> :

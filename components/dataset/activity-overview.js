@@ -48,6 +48,10 @@ export default function ActivityOverview({ dataset_id }) {
        fetchExportData();
     }, []);
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     return ( !isLoadingView && !isLoadingExport &&
         <Card title='Activity Overview'>
             { viewData.length > 0 &&

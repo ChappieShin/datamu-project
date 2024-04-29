@@ -341,6 +341,10 @@ export default function DataTable({ dataset, fetchDatasetData }) {
         }
     ];
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     return (
         <>
             <Form form={form}>

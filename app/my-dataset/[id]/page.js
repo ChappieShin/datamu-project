@@ -46,6 +46,10 @@ export default function Dataset({ params }) {
     useEffect(() => {
         fetchDatasetData();
     }, []);
+
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
     
     return (
         isLoading ? <Spin fullscreen /> :

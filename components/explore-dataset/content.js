@@ -64,6 +64,10 @@ export default function PageContent({ datasetList, organizations, setOrganizatio
     const handleSizeChange = (current, size) => {
         setPageSize(size);
     };
+
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
     
     return (
         <Content style={{ padding: '24px' }}>

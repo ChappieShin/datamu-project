@@ -65,6 +65,10 @@ export default function PageContent({ datasetList, fetchDatasetList, organizatio
         setPageSize(size);
     };
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     return (
         <Content style={{ padding: '24px' }}>
             <Row gutter={8}>

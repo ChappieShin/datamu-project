@@ -23,6 +23,10 @@ export default function TableHeader({ setDatasetList }) {
         }
     };
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     return (
         <Row justify='space-between'>
             <Col>

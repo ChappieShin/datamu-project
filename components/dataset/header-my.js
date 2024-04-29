@@ -29,6 +29,10 @@ export default function PageHeader({ dataset, tabs, onTabChange }) {
             console.log('Error', error);
         }
     };
+
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
     
     return (
         <Header style={{ height: 'auto', padding: '24px 24px 0', background: 'white' }}>

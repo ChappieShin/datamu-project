@@ -101,6 +101,10 @@ export default function PageContent() {
         }
     ];
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     return (
         <Content style={{ padding: '24px' }}>
             <Table

@@ -83,6 +83,10 @@ export default function PageContent({ dataset, user_id }) {
         }
     };
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     return (
         <Content style={{ padding: '24px' }}>
             <Row justify='center'>
