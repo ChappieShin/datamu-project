@@ -22,6 +22,10 @@ export async function GET(request, { params }) {
                             GROUP BY ds.dataset_id, title, subtitle, description, created_date, modified_date, data_lang, permission_type, owner_id, fname, lname, email`;
 
     const query_table = `SELECT COUNT(table_id) AS 'num_tables' FROM DataTables WHERE dataset_id = ${params.id}`;
+
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
      
     try {
         const db = await MySQL_DB();

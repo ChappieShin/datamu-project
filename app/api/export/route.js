@@ -10,6 +10,10 @@ export async function GET(request) {
     const user_id = searchParams.get('user_id');
     const api_key = searchParams.get('api_key');
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     const fetchLogExport = async (detail, status) => {
         try {
             const body = { dataset_id: dataset_id, user_id: user_id, detail: detail, status: status }

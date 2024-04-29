@@ -92,6 +92,10 @@ export async function GET(request) {
         
     const query_table = `SELECT COUNT(table_id) AS 'num_tables' FROM DataTables WHERE dataset_id = ?`;
 
+    if (!process.env.NEXT_PUBLIC_API_URL) {
+        return;
+    }
+
     try {
         const db = await MySQL_DB();
         const [results_dataset] = await db.query(query_dataset);
