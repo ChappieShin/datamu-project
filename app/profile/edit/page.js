@@ -4,10 +4,10 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
-import PageHeader from '@/components/home/header';
-import PageContent from '@/components/home/content';
+import PageHeader from '@/components/edit-profile/header';
+import PageContent from '@/components/edit-profile/content';
 
-export default function Home() {
+export default function EditProfile() {
     const { data: session, status } = useSession();
     const router = useRouter();
     
@@ -19,8 +19,8 @@ export default function Home() {
 
     return ( status === 'authenticated' &&
         <>
-            <PageHeader user_id={session.user.name} />
-            <PageContent />
+            <PageHeader />
+            <PageContent user_id={session.user.name} />
         </>
     );
 }

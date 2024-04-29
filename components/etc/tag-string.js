@@ -1,0 +1,26 @@
+import { Tag } from 'antd';
+
+const string2color = (string) => {
+    let hash = 0;
+    let color = '#';
+    let i;
+
+    for (i = 0 ; i < string.length ; i+=1) {
+        hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+
+    for (i = 0 ; i < 3 ; i+=1) {
+        const value = (hash >> (i * 8)) & 0xff;
+        color += `00${value.toString(16)}`.slice(-2);
+    }
+
+    return color;
+}
+
+export default function StringTag({ name }) {
+    return (
+        <Tag color={string2color(name)}>
+            {name}
+        </Tag>
+    );
+}
