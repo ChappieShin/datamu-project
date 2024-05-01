@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Row, Card, Radio, Skeleton } from 'antd';
+import { Row, Card, Radio, Skeleton, Empty } from 'antd';
 import { BankOutlined, TagOutlined, TranslationOutlined } from '@ant-design/icons';
 import { Pie } from '@ant-design/charts';
 import _ from 'lodash';
@@ -115,7 +115,7 @@ export default function DonutCard() {
                 style: {
                     text: 'Total Datasets',
                     x: '50%',
-                    y: '45%',
+                    y: '46%',
                     textAlign: 'center',
                     fontSize: 14,
                     fill: '#00000073'
@@ -126,7 +126,7 @@ export default function DonutCard() {
                 style: {
                     text: totalDataset.toString(),
                     x: '50%',
-                    y: '55%',
+                    y: '54%',
                     textAlign: 'center',
                     fontSize: 30,
                     fontWeight: 'bold',
@@ -161,9 +161,9 @@ export default function DonutCard() {
             style={{ height: '100%' }}
         >
             <Row justify='center'>
-                { isLoading ?
-                    <Skeleton active paragraph={{ rows: 12 }} /> :
-                    <Pie {...config} width={300} height={400} />
+                { isLoading ? <Skeleton active paragraph={{ rows: 12 }} /> :
+                    config.data.length === 0 ? <Empty /> :
+                    <Pie {...config} width={300} />
                 }
             </Row>
         </Card>

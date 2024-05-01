@@ -16,6 +16,17 @@ export default function Chart({ type, data, xAxis, yAxis, colorAxis, sizeAxis, o
         return chart_data;
     };
 
+    const aggregateAvg = (data, x_col, y_col) => {
+        const aggregate_data = _.groupBy(data, x_col);
+
+        const chart_data = _.map(aggregate_data, (group, x) => {
+            const avg = _.mean(_.map(group, y_col));
+            return { [x_col]: x, [`AVG(${y_col})`]: avg };
+        });
+
+        return chart_data;
+    };
+
     let chart_data = data;
     let x_col_name = xAxis.col_name;
     let y_col_name = yAxis.col_name;
@@ -64,10 +75,13 @@ export default function Chart({ type, data, xAxis, yAxis, colorAxis, sizeAxis, o
                     slider={{
                         x: {}
                     }}
+                    yAxis={{
+                        min: 0
+                    }}
                 />
             );
         case 'area':
-            return <Area width={width} data={data} xField={x_col_name} yField={y1_col_name} seriesField={y2_col_name ? y2_col_name : undefined} colorField={y2_col_name ? y2_col_name : undefined} />;
+            return <Area width={width} data={data} xField={x_col_name} yField={y_col_name} />;
         case 'bar':
             if (yAxis.aggregate_func === 'count') {
                 if (!colorAxis) {
@@ -75,16 +89,36 @@ export default function Chart({ type, data, xAxis, yAxis, colorAxis, sizeAxis, o
                     y_col_name = `COUNT(${yAxis.col_name})`;
                 }
                 else {
-                    const aggregate_data = _.countBy(data, item => (`${item[x_col_name]}$${item[colorAxis.col_name]}`));
+                    const aggregate_data = _.countBy(data, item => (`${item[x_col_name]}&&${item[colorAxis.col_name]}`));
 
                     const temp_data = Object.keys(aggregate_data).map((item) => ({
-                        [x_col_name]: item.split('$')[0],
-                        [colorAxis.col_name]: item.split('$')[1],
+                        [x_col_name]: item.split('&&')[0],
+                        [colorAxis.col_name]: item.split('&&')[1],
                         [`COUNT(${y_col_name})`]: aggregate_data[item]
                     }));
 
                     chart_data = temp_data;
                     y_col_name = `COUNT(${yAxis.col_name})`;
+                }
+            }
+
+            if (yAxis.aggregate_func === 'avg') {
+                if (!colorAxis) {
+                    chart_data = aggregateAvg(data, x_col_name, y_col_name);
+                    y_col_name = `AVG(${yAxis.col_name})`;
+                }
+                else {
+                    const aggregate_data = _.groupBy(data, item => (`${item[x_col_name]}&&${item[colorAxis.col_name]}`));
+
+                    const temp_data = _.map(aggregate_data, (group, key) => {
+                        const [x, color] = key.split('&&');
+                        const avg = _.mean(_.map(group, y_col_name));
+                        return { [x_col_name]: x, [colorAxis.col_name]: color, [`AVG(${y_col_name})`]: avg };
+                    });
+
+                    chart_data = temp_data;
+                    console.log(chart_data)
+                    y_col_name = `AVG(${yAxis.col_name})`;
                 }
             }
 
@@ -95,8 +129,6 @@ export default function Chart({ type, data, xAxis, yAxis, colorAxis, sizeAxis, o
             //                    order === 'asc' && xAxis.data_type === 'datetime' ? chart_data.toSorted((a, b) => (new Date(a[y_col_name]) - new Date(b[y_col_name]))) :
             //                    order === 'desc' && xAxis.data_type === 'datetime' ? chart_data.toSorted((a, b) => (new Date(b[y_col_name]) - new Date(a[y_col_name]))) :
             //                    chart_data;
-
-            console.log(chart_data)
 
             return (
                 <Column 

@@ -94,7 +94,7 @@ export default function PageContent({ dataset }) {
                         />
                     }
                 >
-                    <Card.Grid hoverable={false} style={{ width: '25%', height: '600px' }}>
+                    <Card.Grid hoverable={false} style={{ width: '25%' }}>
                         <Space direction='vertical' size='middle' style={{ width: '100%' }}>
                             <Title level={4} style={{ margin: 0 }}>Attributes</Title>
                             <Collapse 
@@ -106,7 +106,7 @@ export default function PageContent({ dataset }) {
                             />
                         </Space>
                     </Card.Grid>
-                    <Card.Grid hoverable={false} style={{ width: '75%', height: '600px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Card.Grid hoverable={false} style={{ width: '75%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         { !axisXItem || !axisYItem ? <Empty /> :
                             <Chart 
                                 type={chartType}

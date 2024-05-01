@@ -3,12 +3,12 @@ import Mongo_DB from '@/utils/mongo-db';
 import axios from 'axios';
 
 export async function GET(request, { params }) {
-    const query_dataset = `SELECT ds.dataset_id, title, subtitle, description, created_date, modified_date, data_lang, permission_type, owner_id, fname, lname, email, faculty_name, faculty_short, faculty_color,
+    const query_dataset = `SELECT ds.dataset_id, title, subtitle, description, created_date, modified_date, data_lang, permission_type, owner_id, fname, lname, email, faculty_name, faculty_short, faculty_color, u.unit_id, dv.division_id,
                             GROUP_CONCAT(t.tag_name) AS tags,
                             CAST(COALESCE(ANY_VALUE(view_count), 0) AS UNSIGNED) AS view_count,
                             CAST(COALESCE(ANY_VALUE(export_count), 0) AS UNSIGNED) AS export_count
                             FROM Datasets ds 
-                            JOIN Users u ON ds.owner_id = u.user_id JOIN Faculties f ON u.faculty_id = f.faculty_id
+                            JOIN Users u ON ds.owner_id = u.user_id JOIN Faculties f ON u.faculty_id = f.faculty_id JOIN Units un ON u.unit_id = un.unit_id JOIN Divisions dv ON u.division_id = dv.division_id
                             LEFT JOIN Datasets_Tags dt ON ds.dataset_id = dt.dataset_id LEFT JOIN Tags t ON dt.tag_id = t.tag_id
                             LEFT JOIN (
                                 SELECT dataset_id, 

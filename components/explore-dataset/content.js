@@ -88,7 +88,7 @@ export default function PageContent({ datasetList, isLoading, organizations, set
                                 <Checkbox.Group value={organizations} onChange={(value) => (setOrganizations(value))}>
                                     <Space direction='vertical'>
                                         {facultyOptions.map((faculty) => (
-                                            <Checkbox value={faculty.faculty_id}>
+                                            <Checkbox key={faculty.faculty_id} value={faculty.faculty_id}>
                                                 {`${faculty.faculty_short} (${faculty.faculty_name})`} 
                                                 <span style={{ color: '#00000073' }}> ({datasetList.filter((dataset) => (dataset.faculty_id === faculty.faculty_id)).length})</span>
                                             </Checkbox>
@@ -117,8 +117,8 @@ export default function PageContent({ datasetList, isLoading, organizations, set
                             { isFilterLoading ? <Skeleton active paragraph={{ rows: 3 }} /> :
                                 <Checkbox.Group value={tags} onChange={(value) => (setTags(value))}>
                                     <Space direction='vertical'>
-                                        {tagOptions.map((tag) => (
-                                            <Checkbox value={tag.tag_name}>
+                                        {tagOptions.map((tag, index) => (
+                                            <Checkbox key={index} value={tag.tag_name}>
                                                 {tag.tag_name}
                                                 <span style={{ color: '#00000073' }}> ({datasetList.filter((dataset) => (dataset.tags.includes(tag.tag_name))).length})</span>
                                             </Checkbox>

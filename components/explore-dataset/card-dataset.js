@@ -70,7 +70,7 @@ export default function DatasetCard({ dataset }) {
                         </Row>
                         <Row justify='space-between'>
                             <Col>
-                                {dataset.tags && dataset.tags.split(',').map((tag) => (<StringTag name={tag} />))}
+                                {dataset.tags && dataset.tags.split(',').map((tag, index) => (<StringTag key={index} name={tag} />))}
                             </Col>
                             <Col>
                                 <Space size='middle'>

@@ -9,12 +9,12 @@ export async function GET(request) {
     let query_dataset;
 
     if (user_id && search_keyword) {
-        query_dataset = `SELECT ds.dataset_id, title, subtitle, description, created_date, modified_date, data_lang, permission_type, owner_id, fname, lname, email, u.faculty_id, faculty_name, faculty_short, faculty_color,
+        query_dataset = `SELECT ds.dataset_id, title, subtitle, description, created_date, modified_date, data_lang, permission_type, owner_id, fname, lname, email, u.faculty_id, faculty_name, faculty_short, faculty_color, u.unit_id, dv.division_id,
                         GROUP_CONCAT(t.tag_name) AS tags, 
                         CAST(COALESCE(ANY_VALUE(view_count), 0) AS UNSIGNED) AS view_count,
                         CAST(COALESCE(ANY_VALUE(export_count), 0) AS UNSIGNED) AS export_count
                         FROM Datasets ds 
-                        JOIN Users u ON ds.owner_id = u.user_id JOIN Faculties f ON u.faculty_id = f.faculty_id
+                        JOIN Users u ON ds.owner_id = u.user_id JOIN Faculties f ON u.faculty_id = f.faculty_id JOIN Units un ON u.unit_id = un.unit_id JOIN Divisions dv ON u.division_id = dv.division_id
                         LEFT JOIN Datasets_Tags dt ON ds.dataset_id = dt.dataset_id LEFT JOIN Tags t ON dt.tag_id = t.tag_id
                         LEFT JOIN (
                             SELECT dataset_id, 
@@ -28,12 +28,12 @@ export async function GET(request) {
                         GROUP BY ds.dataset_id, title, subtitle, description, created_date, modified_date, data_lang, permission_type, owner_id, fname, lname, email`;
     }
     else if (user_id) {
-        query_dataset = `SELECT ds.dataset_id, title, subtitle, description, created_date, modified_date, data_lang, permission_type, owner_id, fname, lname, email, u.faculty_id, faculty_name, faculty_short, faculty_color,
+        query_dataset = `SELECT ds.dataset_id, title, subtitle, description, created_date, modified_date, data_lang, permission_type, owner_id, fname, lname, email, u.faculty_id, faculty_name, faculty_short, faculty_color, u.unit_id, dv.division_id,
                         GROUP_CONCAT(t.tag_name) AS tags,
                         CAST(COALESCE(ANY_VALUE(view_count), 0) AS UNSIGNED) AS view_count,
                         CAST(COALESCE(ANY_VALUE(export_count), 0) AS UNSIGNED) AS export_count
                         FROM Datasets ds 
-                        JOIN Users u ON ds.owner_id = u.user_id JOIN Faculties f ON u.faculty_id = f.faculty_id
+                        JOIN Users u ON ds.owner_id = u.user_id JOIN Faculties f ON u.faculty_id = f.faculty_id JOIN Units un ON u.unit_id = un.unit_id JOIN Divisions dv ON u.division_id = dv.division_id
                         LEFT JOIN Datasets_Tags dt ON ds.dataset_id = dt.dataset_id LEFT JOIN Tags t ON dt.tag_id = t.tag_id
                         LEFT JOIN (
                             SELECT dataset_id, 
@@ -47,12 +47,12 @@ export async function GET(request) {
                         GROUP BY ds.dataset_id, title, subtitle, description, created_date, modified_date, data_lang, permission_type, owner_id, fname, lname, email`;
     }
     else if (search_keyword) {
-        query_dataset = `SELECT ds.dataset_id, title, subtitle, description, created_date, modified_date, data_lang, permission_type, owner_id, fname, lname, email, u.faculty_id, faculty_name, faculty_short, faculty_color,
+        query_dataset = `SELECT ds.dataset_id, title, subtitle, description, created_date, modified_date, data_lang, permission_type, owner_id, fname, lname, email, u.faculty_id, faculty_name, faculty_short, faculty_color, u.unit_id, dv.division_id,
                         GROUP_CONCAT(t.tag_name) AS tags,
                         CAST(COALESCE(ANY_VALUE(view_count), 0) AS UNSIGNED) AS view_count,
                         CAST(COALESCE(ANY_VALUE(export_count), 0) AS UNSIGNED) AS export_count
                         FROM Datasets ds 
-                        JOIN Users u ON ds.owner_id = u.user_id JOIN Faculties f ON u.faculty_id = f.faculty_id
+                        JOIN Users u ON ds.owner_id = u.user_id JOIN Faculties f ON u.faculty_id = f.faculty_id JOIN Units un ON u.unit_id = un.unit_id JOIN Divisions dv ON u.division_id = dv.division_id
                         LEFT JOIN Datasets_Tags dt ON ds.dataset_id = dt.dataset_id LEFT JOIN Tags t ON dt.tag_id = t.tag_id
                         LEFT JOIN (
                             SELECT dataset_id, 
@@ -66,12 +66,12 @@ export async function GET(request) {
                         GROUP BY ds.dataset_id, title, subtitle, description, created_date, modified_date, data_lang, permission_type, owner_id, fname, lname, email`;
     }
     else {
-        query_dataset = `SELECT ds.dataset_id, title, subtitle, description, created_date, modified_date, data_lang, permission_type, owner_id, fname, lname, email, u.faculty_id, faculty_name, faculty_short, faculty_color,
+        query_dataset = `SELECT ds.dataset_id, title, subtitle, description, created_date, modified_date, data_lang, permission_type, owner_id, fname, lname, email, u.faculty_id, faculty_name, faculty_short, faculty_color, u.unit_id, dv.division_id,
                         GROUP_CONCAT(t.tag_name) AS tags,
                         CAST(COALESCE(ANY_VALUE(view_count), 0) AS UNSIGNED) AS view_count,
                         CAST(COALESCE(ANY_VALUE(export_count), 0) AS UNSIGNED) AS export_count
                         FROM Datasets ds 
-                        JOIN Users u ON ds.owner_id = u.user_id JOIN Faculties f ON u.faculty_id = f.faculty_id
+                        JOIN Users u ON ds.owner_id = u.user_id JOIN Faculties f ON u.faculty_id = f.faculty_id JOIN Units un ON u.unit_id = un.unit_id JOIN Divisions dv ON u.division_id = dv.division_id
                         LEFT JOIN Datasets_Tags dt ON ds.dataset_id = dt.dataset_id LEFT JOIN Tags t ON dt.tag_id = t.tag_id
                         LEFT JOIN (
                             SELECT dataset_id, 

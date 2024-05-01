@@ -14,9 +14,14 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
     const [modalAppend, setModalAppend] = useState(false);
     const [modalJoin, setModalJoin] = useState(false);
     const [modalCluster, setModalCluster] = useState(false);
-    const [clusterStep, setClusterStep] = useState(1);
     const [modalSaveTable, setModalSaveTable] = useState(false);
     const [modalReplaceTable, setModalReplaceTable] = useState(false);
+
+    const [loadingAppend, setLoadingAppend] = useState(false);
+    const [loadingJoin, setLoadingJoin] = useState(false);
+    const [loadingCluster, setLoadingCluster] = useState(false);
+    const [loadingSaveTable, setLoadingSaveTable] = useState(false);
+    const [loadingReplaceTable, setLoadingReplaceTable] = useState(false);
 
     const [joinTable1, setJoinTable1] = useState([]);
     const [joinTable2, setJoinTable2] = useState([]);
@@ -62,6 +67,7 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
         };
 
         try {
+            setLoadingAppend(true);
             const response = await axios.post(`${process.env.NEXT_PUBLIC_FASTAPI_URL}/api/append-table`, body);
             const data = response.data;
             const id = uuidv4();
@@ -73,6 +79,8 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
         } catch (error) {
             console.log('Error', error);
             message.error(error.response.data.detail);
+        } finally {
+            setLoadingAppend(false);
         }
     };
 
@@ -83,6 +91,7 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
             table_2: dataset.find((table) => (table.table_id === values.table_2)).data,
         };
         try {
+            setLoadingJoin(true);
             const response = await axios.post(`${process.env.NEXT_PUBLIC_FASTAPI_URL}/api/join-table`, body);
             const data = response.data;
             const id = uuidv4();
@@ -94,6 +103,8 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
         } catch (error) {
             console.log('Error', error);
             message.error(error.response.data.detail);
+        } finally {
+            setLoadingJoin(false);
         }
     };
 
@@ -104,6 +115,7 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
         };
 
         try {
+            setLoadingCluster(true);
             const response = await axios.post(`${process.env.NEXT_PUBLIC_FASTAPI_URL}/api/cluster-matching`, body);
             const data = response.data;
             const id = uuidv4();
@@ -115,6 +127,8 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
         } catch (error) {
             console.log('Error', error);
             message.error(error.response.data.detail);
+        } finally {
+            setLoadingCluster(false);
         }
     };
 
@@ -126,6 +140,7 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
         };
 
         try {
+            setLoadingSaveTable(true);
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/tables`, body);
             const data = response.data;
             if (!data.error) {
@@ -139,6 +154,8 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
             }
         } catch (error) {
             message.error(`Failed to save a new table (Detail: ${error})`);
+        } finally {
+            setLoadingSaveTable(false);
         }
     };
 
@@ -148,6 +165,7 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
         };
 
         try {
+            setLoadingReplaceTable(true);
             const response = await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/tables/${values.table_id}`, body);
             const data = response.data;
             if (!data.error) {
@@ -161,6 +179,8 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
             }
         } catch (error) {
             message.error(`Failed to replace an existing table (Detail: ${error})`);
+        } finally {
+            setLoadingReplaceTable(false);
         }
     };
 
@@ -355,7 +375,7 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
                     <Form.Item style={{ textAlign: 'right', marginBottom: 0 }}>
                         <Space>
                             <Button onClick={handleAppendCancel}>Cancel</Button>
-                            <Button type='primary' htmlType='submit'>Append</Button>
+                            <Button type='primary' htmlType='submit' loading={loadingAppend}>Append</Button>
                         </Space>
                     </Form.Item>
                 </Form>
@@ -436,13 +456,13 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
                     <Form.Item style={{ textAlign: 'right', marginBottom: 0 }}>
                         <Space>
                             <Button onClick={handleJoinCancel}>Cancel</Button>
-                            <Button type='primary' htmlType='submit'>Join</Button>
+                            <Button type='primary' htmlType='submit' loading={loadingJoin}>Join</Button>
                         </Space>
                     </Form.Item>
                 </Form>
             </Modal>
             <Modal
-                title={`Cluster Matching (${clusterStep}/2)`}
+                title='Cluster Matching'
                 open={modalCluster}
                 onCancel={handleClusterCancel}
                 footer={[]}
@@ -486,7 +506,7 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
                     <Form.Item style={{ textAlign: 'right', marginBottom: 0 }}>
                         <Space>
                             <Button onClick={handleClusterCancel}>Cancel</Button>
-                            <Button type='primary' htmlType='submit'>Match</Button>
+                            <Button type='primary' htmlType='submit' loading={loadingCluster}>Match</Button>
                         </Space>
                     </Form.Item>
                 </Form>
@@ -515,7 +535,7 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
                     <Form.Item style={{ textAlign: 'right', marginBottom: 0 }}>
                         <Space>
                             <Button onClick={handleSaveTableCancel}>Cancel</Button>
-                            <Button type='primary' htmlType='submit'>Save</Button>
+                            <Button type='primary' htmlType='submit' loading={loadingSaveTable}>Save</Button>
                         </Space>
                     </Form.Item>
                 </Form>
@@ -541,7 +561,7 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
                     <Form.Item style={{ textAlign: 'right', marginBottom: 0 }}>
                         <Space>
                             <Button onClick={handleReplaceTableCancel}>Cancel</Button>
-                            <Button type='primary' htmlType='submit'>Replace</Button>
+                            <Button type='primary' htmlType='submit' loading={loadingReplaceTable}>Replace</Button>
                         </Space>
                     </Form.Item>
                 </Form>
