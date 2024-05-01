@@ -6,7 +6,7 @@ import { Layout, Space, Typography, Breadcrumb } from 'antd';
 const { Header } = Layout;
 const { Title } = Typography;
 
-export default function PageHeader({ dataset_id }) {
+export default function PageHeader({ dataset }) {
     return (
         <Header style={{ height: 'auto', padding: '24px', background: 'white' }}>
             <Space direction='vertical' style={{ display: 'flex' }}>
@@ -14,11 +14,11 @@ export default function PageHeader({ dataset_id }) {
                     items={[
                         {title: 'Dataset'},
                         {title: <Link href='/explore-dataset'>Explore Dataset</Link>},
-                        {title: <Link href={`/explore-dataset/${dataset_id}`}>{dataset_id}</Link>},
+                        {title: <Link href={`/explore-dataset/${dataset.dataset_id}`}>{dataset.dataset_id}</Link>},
                         {title: 'Data Preparation'}
                     ]}
                 />
-                <Title level={2} style={{ margin: 0 }}>{`Data Preparation (${dataset_id})`}</Title>
+                <Title level={2} style={{ margin: 0 }}>{`Data Preparation (${dataset.title})`}</Title>
             </Space>
         </Header>
     );

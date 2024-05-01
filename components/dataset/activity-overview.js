@@ -4,7 +4,7 @@ import CountUp from 'react-countup';
 import _ from 'lodash';
 import dayjs from 'dayjs';
 
-import { Row, Card, Skeleton, Statistic, Divider, Col, Space, Spin } from 'antd';
+import { Row, Card, Statistic, Divider, Col, Space, Skeleton, Empty } from 'antd';
 import { EyeOutlined, CalendarOutlined, ArrowDownOutlined, ArrowUpOutlined, FileExcelOutlined, FileTextOutlined, ApiOutlined } from '@ant-design/icons';
 import { Area } from '@ant-design/charts';
 
@@ -15,8 +15,7 @@ export default function ActivityOverview({ dataset_id }) {
     const [excelData, setExcelData] = useState([]);
     const [csvData, setCsvData] = useState([]);
     const [apiData, setApiData] = useState([]);
-    const [isLoadingView, setIsLoadingView] = useState(true);
-    const [isLoadingExport, setIsLoadingExport] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
     const fetchViewData = async () => {
         try {
@@ -24,7 +23,6 @@ export default function ActivityOverview({ dataset_id }) {
             console.log(response)
             const data = response.data;
             setViewData(data.data);
-            setIsLoadingView(false);
         } catch (error) {
             console.log('Error', error);
         }
@@ -37,32 +35,39 @@ export default function ActivityOverview({ dataset_id }) {
             setExcelData(data.data.filter((d) => (d.export_format === 'xlsx')));
             setCsvData(data.data.filter((d) => (d.export_format === 'csv')));
             setApiData(data.data.filter((d) => (d.export_format === 'API')));
-            setIsLoadingExport(false);
         } catch (error) {
             console.log('Error', error);
         }
     };
 
     useEffect(() => {
-       fetchViewData();
-       fetchExportData();
+        Promise.all([fetchViewData(), fetchExportData()])
+        .then(() => {
+            setIsLoading(false);
+        })
+        .catch((error) => {
+            console.log('Error fetching data:', error);
+        });
     }, []);
 
     if (!process.env.NEXT_PUBLIC_API_URL) {
         return;
     }
 
-    return ( !isLoadingView && !isLoadingExport &&
+    return (
         <Card title='Activity Overview'>
-            { viewData.length > 0 &&
-                <Card.Grid hoverable={false} style={{ width: '25%' }}>
-                    <Area
-                        height={200}
-                        data={viewData} 
-                        xField={(d) => new Date(d.view_date)} 
-                        yField='Number of view(s)' 
-                        shapeField='smooth'
-                    />
+            <Card.Grid hoverable={false} style={{ width: '25%' }}>
+                { isLoading ? <Skeleton active paragraph={{ rows: 5 }} /> : 
+                <>
+                    { viewData.length === 0 ? <Empty style={{ marginTop: '20px', marginBottom: '55px' }} /> :
+                        <Area
+                            height={200}
+                            data={viewData} 
+                            xField={(d) => new Date(d.view_date)} 
+                            yField='Number of view(s)' 
+                            shapeField='smooth'
+                        />
+                    }
                     <Row justify='space-around'>
                         <Col>
                             <Statistic 
@@ -92,18 +97,22 @@ export default function ActivityOverview({ dataset_id }) {
                             />
                         </Col>
                     </Row>
-                </Card.Grid>
-            }
-            { excelData.length > 0 &&
-                <Card.Grid hoverable={false} style={{ width: '25%' }}>
-                    <Area
-                        height={200}
-                        data={excelData} 
-                        xField={(d) => new Date(d.export_date)}
-                        yField='Number of export(s)'
-                        shapeField='smooth'
-                        style={{ fill: 'green' }}
-                    />
+                </>
+                }
+            </Card.Grid>
+            <Card.Grid hoverable={false} style={{ width: '25%' }}>
+                { isLoading ? <Skeleton active paragraph={{ rows: 5 }} /> : 
+                <>
+                    { excelData.length === 0 ? <Empty style={{ marginTop: '20px', marginBottom: '55px' }} /> : 
+                        <Area
+                            height={200}
+                            data={excelData} 
+                            xField={(d) => new Date(d.export_date)}
+                            yField='Number of export(s)'
+                            shapeField='smooth'
+                            style={{ fill: 'green' }}
+                        />
+                    }
                     <Row justify='space-around'>
                         <Col>
                             <Statistic 
@@ -133,18 +142,22 @@ export default function ActivityOverview({ dataset_id }) {
                             />
                         </Col>
                     </Row>
-                </Card.Grid>
-            }
-            { csvData.length > 0 &&
-                <Card.Grid hoverable={false} style={{ width: '25%' }}>
-                    <Area
-                        height={200}
-                        data={csvData} 
-                        xField={(d) => new Date(d.export_date)}
-                        yField='Number of export(s)'
-                        shapeField='smooth'
-                        style={{ fill: 'orange' }}
-                    />
+                </>
+                }
+            </Card.Grid>
+            <Card.Grid hoverable={false} style={{ width: '25%' }}>
+                { isLoading ? <Skeleton active paragraph={{ rows: 5 }} /> : 
+                <>
+                    { csvData.length === 0 ? <Empty style={{ marginTop: '20px', marginBottom: '55px' }} /> : 
+                        <Area
+                            height={200}
+                            data={csvData} 
+                            xField={(d) => new Date(d.export_date)}
+                            yField='Number of export(s)'
+                            shapeField='smooth'
+                            style={{ fill: 'orange' }}
+                        />
+                    }
                     <Row justify='space-around'>
                         <Col>
                             <Statistic 
@@ -174,18 +187,22 @@ export default function ActivityOverview({ dataset_id }) {
                             />
                         </Col>
                     </Row>
-                </Card.Grid>
-            }
-            { apiData.length > 0 &&
-                <Card.Grid hoverable={false} style={{ width: '25%' }}>
-                    <Area
-                        height={200}
-                        data={apiData} 
-                        xField={(d) => new Date(d.export_date)}
-                        yField='Number of export(s)'
-                        shapeField='smooth'
-                        style={{ fill: 'red' }}
-                    />
+                </>
+                }
+            </Card.Grid>
+            <Card.Grid hoverable={false} style={{ width: '25%' }}>
+                { isLoading ? <Skeleton active paragraph={{ rows: 5 }} /> : 
+                <>
+                    { apiData.length === 0 ? <Empty style={{ marginTop: '20px', marginBottom: '55px' }} /> : 
+                        <Area
+                            height={200}
+                            data={apiData} 
+                            xField={(d) => new Date(d.export_date)}
+                            yField='Number of export(s)'
+                            shapeField='smooth'
+                            style={{ fill: 'red' }}
+                        />
+                    }
                     <Row justify='space-around'>
                         <Col>
                             <Statistic 
@@ -215,8 +232,9 @@ export default function ActivityOverview({ dataset_id }) {
                             />
                         </Col>
                     </Row>
-                </Card.Grid>
-            }   
-            </Card>
+                </>
+                }
+            </Card.Grid>
+        </Card>
     );
 }

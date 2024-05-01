@@ -5,12 +5,6 @@ export async function GET(request) {
     const { searchParams } = new URL (request.url);
     const user_id = searchParams.get('user_id');
     const search_keyword = searchParams.get('search_keyword');
-    const permission_type = searchParams.get('permission_type');
-    const sort_option = searchParams.get('sort_option');
-    const owner_id = searchParams.get('owner_id');
-    const organizations = searchParams.get('organizations');
-    const tags = searchParams.get('tags');
-    const data_lang = searchParams.get('data_lang');
 
     let query_dataset;
 
@@ -30,7 +24,7 @@ export async function GET(request) {
                             WHERE status = 'Success'
                             GROUP BY dataset_id
                         ) dl ON ds.dataset_id = dl.dataset_id
-                        WHERE owner_id = ${user_id} AND title LIKE '%${search_keyword}%' OR subtitle LIKE '%${search_keyword}%'
+                        WHERE owner_id = ${user_id} AND LOWER(title) LIKE '%${search_keyword}%' OR LOWER(subtitle) LIKE '%${search_keyword}%'
                         GROUP BY ds.dataset_id, title, subtitle, description, created_date, modified_date, data_lang, permission_type, owner_id, fname, lname, email`;
     }
     else if (user_id) {
@@ -68,7 +62,7 @@ export async function GET(request) {
                             WHERE status = 'Success'
                             GROUP BY dataset_id
                         ) dl ON ds.dataset_id = dl.dataset_id
-                        WHERE title LIKE '%${search_keyword}%' OR subtitle LIKE '%${search_keyword}%'
+                        WHERE LOWER(title) LIKE '%${search_keyword}%' OR LOWER(subtitle) LIKE '%${search_keyword}%'
                         GROUP BY ds.dataset_id, title, subtitle, description, created_date, modified_date, data_lang, permission_type, owner_id, fname, lname, email`;
     }
     else {
@@ -109,51 +103,6 @@ export async function GET(request) {
 
         await Promise.all(promises);
         db.release();
-
-        if (permission_type && permission_type !== 'all') {
-            if (permission_type === 'owned') {
-                datasets = datasets.filter((dataset) => (dataset.owner_id === Number(owner_id)));
-            }
-            else if (permission_type === 'shared') {
-                datasets = datasets.filter((dataset) => (dataset.owner_id !== Number(owner_id)));
-            }
-        }
-
-        if (organizations) {
-            datasets = datasets.filter((dataset) => (organizations.split(',').includes(dataset.faculty_id.toString())));
-        }
-
-        if (tags) {
-            const tagList = tags.split(',');
-            datasets = datasets.filter((dataset) =>
-                dataset.tags.split(',').some(tag => tagList.includes(tag))
-            );
-        }
-
-        if (data_lang) {
-            datasets = datasets.filter((dataset) => (data_lang.split(',').includes(dataset.data_lang)))
-        }
-
-        if (sort_option && sort_option !== 'none') {
-            if (sort_option === 'name_asc') {
-                datasets.sort((a, b) => (a.title.localeCompare(b.title)));
-            }
-            else if (sort_option === 'name_desc') {
-                datasets.sort((a, b) => (b.title.localeCompare(a.title)));
-            }
-            else if (sort_option === 'modified_asc') {
-                datasets.sort((a, b) => (new Date(a.modified_date) - new Date(b.modified_date)));
-            }
-            else if (sort_option === 'modified_desc') {
-                datasets.sort((a, b) => (new Date(b.modified_date) - new Date(a.modified_date)));
-            }
-            else if (sort_option === 'most_viewed') {
-                datasets.sort((a, b) => (b.view_count - a.view_count));
-            }
-            else if (sort_option === 'most_exported') {
-                datasets.sort((a, b) => (b.export_count - a.export_count));
-            }
-        }
 
         return Response.json({ error: false, data: datasets });
     } catch (error) {

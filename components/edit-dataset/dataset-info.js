@@ -154,9 +154,9 @@ export default function DatasetInfo({ dataset }) {
                 <Select
                     placeholder='Select a data language'
                     options={[
-                        {label: 'English', value: 'english'},
-                        {label: 'Thai', value: 'thai'},
-                        {label: 'Others', value: 'others'}
+                        {label: 'English', value: 'English'},
+                        {label: 'Thai', value: 'Thai'},
+                        {label: 'Others', value: 'Others'}
                     ]}
                     style={{ width: '50%' }}
                 />

@@ -14,6 +14,7 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
     const [modalAppend, setModalAppend] = useState(false);
     const [modalJoin, setModalJoin] = useState(false);
     const [modalCluster, setModalCluster] = useState(false);
+    const [clusterStep, setClusterStep] = useState(1);
     const [modalSaveTable, setModalSaveTable] = useState(false);
     const [modalReplaceTable, setModalReplaceTable] = useState(false);
 
@@ -441,7 +442,7 @@ export default function ToolBar({ dataset, setDataset, dataset_id, owner_id, tab
                 </Form>
             </Modal>
             <Modal
-                title='Cluster Matching'
+                title={`Cluster Matching (${clusterStep}/2)`}
                 open={modalCluster}
                 onCancel={handleClusterCancel}
                 footer={[]}

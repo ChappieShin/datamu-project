@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Row, Card, Radio, Skeleton } from 'antd';
 import { BankOutlined, TagOutlined, TranslationOutlined } from '@ant-design/icons';
-import { Pie } from '@ant-design/plots';
+import { Pie } from '@ant-design/charts';
 import _ from 'lodash';
 
 export default function DonutCard() {
@@ -15,7 +15,6 @@ export default function DonutCard() {
 
     const fetchCountDataset = async () => {
         try {
-            setIsLoading(true);
             const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets`);
             const data = response.data;
             setTotalDataset(data.data.length);
@@ -25,8 +24,6 @@ export default function DonutCard() {
             setDataLangCountData(count_data_lang);
         } catch (error) {
             console.log('Error', error);
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -38,8 +35,6 @@ export default function DonutCard() {
             setFacultyCountData(data.data.filter((faculty) => (faculty['Number of dataset(s)'] > 0)));
         } catch (error) {
             console.log('Error', error);
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -51,15 +46,17 @@ export default function DonutCard() {
             setTagCountData(data.data.filter((tag) => (tag['Number of dataset(s)'] > 0)));
         } catch (error) {
             console.log('Error', error);
-        } finally {
-            setIsLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchCountDataset();
-        fetchFacultyCountData();
-        fetchTagCountData();
+        Promise.all([fetchCountDataset(), fetchFacultyCountData(), fetchTagCountData()])
+        .then(() => {
+            setIsLoading(false);
+        })
+        .catch((error) => {
+            console.log('Error fetching data:', error);
+        });
     }, []);
 
     const string2color = (string) => {
@@ -86,7 +83,7 @@ export default function DonutCard() {
         radius: 0.9,
         innerRadius: 0.7,
         style: {
-            inset: 1,
+            inset: 1
         },
         tooltip: {
             title: (d) => chartOption === 'organization' ? (d['faculty_short'] + ' (' + d['faculty_name'] + ')') : 
@@ -118,7 +115,7 @@ export default function DonutCard() {
                 style: {
                     text: 'Total Datasets',
                     x: '50%',
-                    y: '42%',
+                    y: '45%',
                     textAlign: 'center',
                     fontSize: 14,
                     fill: '#00000073'
@@ -165,8 +162,8 @@ export default function DonutCard() {
         >
             <Row justify='center'>
                 { isLoading ?
-                    <Skeleton active paragraph={{ rows: 7 }} /> :
-                    <Pie {...config} width={300} height={300} />
+                    <Skeleton active paragraph={{ rows: 12 }} /> :
+                    <Pie {...config} width={300} height={400} />
                 }
             </Row>
         </Card>

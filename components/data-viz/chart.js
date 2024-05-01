@@ -1,4 +1,4 @@
-import { Line, Area, Column, Pie, Scatter, Radar } from '@ant-design/plots';
+import { Line, Area, Column, Pie, Scatter, Radar } from '@ant-design/charts';
 import _ from 'lodash';
 
 const width = 800;

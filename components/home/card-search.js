@@ -9,7 +9,7 @@ export default function SearchCard() {
     const router = useRouter();
 
     const handleSearch = (value) => {
-        router.push(`/explore-dataset?search_keyword=${encodeURIComponent(value)}`);
+        router.push(`/explore-dataset?query=${encodeURIComponent(value)}`);
     };
 
     return (

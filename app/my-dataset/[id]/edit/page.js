@@ -49,7 +49,7 @@ export default function EditDataset({ params }) {
     return (
         isLoading ? <Spin fullscreen /> :
         <>
-            <PageHeader dataset_id={params.id} tabs={tab_items} onTabChange={handleChange} />
+            <PageHeader dataset={datasetData} tabs={tab_items} onTabChange={handleChange} />
             <PageContent dataset={datasetData} tab={tabState} fetchDatasetData={fetchDatasetData} />
         </>
     );

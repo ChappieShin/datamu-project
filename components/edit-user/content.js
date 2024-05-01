@@ -194,8 +194,8 @@ export default function PageContent({ user }) {
                         <Select
                             placeholder='Select a role'
                             options={[
-                                {label: 'Admin', value: 'admin'},
-                                {label: 'Staff', value: 'staff'}
+                                {label: 'Admin', value: 'Admin'},
+                                {label: 'Staff', value: 'Staff'}
                             ]}
                             style={{ width: '40%' }}
                         />

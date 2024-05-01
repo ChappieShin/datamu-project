@@ -1,6 +1,5 @@
 'use client'
 
-import axios from 'axios';
 import Link from 'next/link';
 
 import { Layout, Row, Col, Space, Typography, Breadcrumb, Input, Select, Button } from 'antd';
@@ -10,7 +9,7 @@ const { Header } = Layout;
 const { Title, Text } = Typography;
 const { Search } = Input;
 
-export default function PageHeader({ datasetList, setSearchKeyword, sortOption, setSortOption }) {
+export default function PageHeader({ datasetList, searchKeyword, handleSearch, sortOption, setSortOption }) {
 
     return (
         <Header style={{ height: 'auto', padding: '24px', background: 'white' }}>
@@ -33,7 +32,8 @@ export default function PageHeader({ datasetList, setSearchKeyword, sortOption, 
                                 placeholder='Search datasets...'
                                 allowClear
                                 enterButton
-                                onSearch={(value) => (setSearchKeyword(value))}
+                                defaultValue={searchKeyword}
+                                onSearch={(value) => (handleSearch(value))}
                                 style={{ width: '700px' }}
                             />
                         </Row>
@@ -78,8 +78,8 @@ export default function PageHeader({ datasetList, setSearchKeyword, sortOption, 
                                                             {label: 'Name descending', value: 'name_desc'},
                                                             {label: 'Last modified ascending', value: 'modified_asc'},
                                                             {label: 'Last modified descending', value: 'modified_desc'},
-                                                            // {label: 'Most viewed', value: 'most_viewed'},
-                                                            // {label: 'Most exported', value: 'most_exported'}
+                                                            {label: 'Most viewed', value: 'most_viewed'},
+                                                            {label: 'Most exported', value: 'most_exported'}
                                                         ]}
                                                         onChange={(value) => (setSortOption(value))}
                                                         size='small'

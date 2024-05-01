@@ -14,8 +14,8 @@ const formatter = (value) => <CountUp end={value} />;
 
 export default function PageHeader({ user_id }) {
     const [userData, setUserData] = useState(null);
-    const [numOwnedDataset, setNumOwnedDataset] = useState(0);
-    const [numSharedDataset, setNumSharedDataset] = useState(0);
+    const [numOwnedDataset, setNumOwnedDataset] = useState(null);
+    const [numSharedDataset, setNumSharedDataset] = useState(null);
     const router = useRouter();
     
     const fetchUserData = async () => {
@@ -23,6 +23,7 @@ export default function PageHeader({ user_id }) {
             const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${user_id}`);
             const data = response.data;
             setUserData(data.data[0]);
+            return data.data[0];
         } catch (error) {
             console.log('Error', error);
         }
@@ -30,17 +31,24 @@ export default function PageHeader({ user_id }) {
 
     const fetchDatasetData = async () => {
         try {
+            const user = await fetchUserData();
             const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets`);
-            const data= response.data;
+            const data = response.data;
             setNumOwnedDataset(data.data.filter((dataset) => (dataset.owner_id === user_id)).length);
-            setNumSharedDataset(data.data.filter((dataset) => (dataset.owner_id !== user_id && dataset.permission_type === 'Public')).length);
+            setNumSharedDataset(data.data.filter((dataset) => (
+                dataset.owner_id !== user_id && (
+                    (dataset.permission_type === 'Public') ||
+                    (dataset.permission_type === 'Faculty' && dataset.faculty_id === user.faculty_id) ||
+                    (dataset.permission_type === 'Unit' && dataset.unit_id === user.unit_id) ||
+                    (dataset.permission_type === 'Division' && dataset.division_id === user.division_id)
+                )
+            )).length);
         } catch (error) {
             console.log('Error', error);
         }
     };
     
     useEffect(() => {
-        fetchUserData();
         fetchDatasetData();
         router.refresh();
     }, []);

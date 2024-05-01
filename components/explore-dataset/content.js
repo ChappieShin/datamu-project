@@ -2,21 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Layout, Row, Col, Space, Typography, Card, Pagination, Empty, Checkbox } from 'antd';
+import { Layout, Row, Col, Space, Typography, Card, Pagination, Empty, Checkbox, Skeleton } from 'antd';
 import { BankOutlined, TagOutlined, TranslationOutlined } from '@ant-design/icons';
 import DatasetCard from './card-dataset';
 
 const { Content } = Layout;
 const { Link } = Typography;
 
-export default function PageContent({ datasetList, organizations, setOrganizations, tags, setTags, dataLanguages, setDataLanguages, user_id }) {
+export default function PageContent({ datasetList, isLoading, organizations, setOrganizations, tags, setTags, dataLanguages, setDataLanguages }) {
     const [facultyOptions, setFacultyOptions] = useState([]);
     const [tagOptions, setTagOptions] = useState([]);
-    const [dataLangOptions, setDataLangOptions] = useState([]);
+    const [isFilterLoading, setIsFilterLoading] = useState(true);
 
     const fetchFacultyOptions = async () => {
         try {
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/faculties?count_datasets=true`);
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/faculties`);
             const data = response.data;
             setFacultyOptions(data.data.sort((a, b) => (a.faculty_short.localeCompare(b.faculty_short))));
         } catch (error) {
@@ -34,20 +34,14 @@ export default function PageContent({ datasetList, organizations, setOrganizatio
         }
     };
 
-    const fetchDataLangOptions = async () => {
-        try {
-            const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/data_lang`);
-            const data = response.data;
-            setDataLangOptions(data.data);
-        } catch (error) {
-            console.log('Error', error);
-        }
-    };
-
     useEffect(() => {
-        fetchFacultyOptions();
-        fetchTagOptions();
-        fetchDataLangOptions();
+        Promise.all([fetchFacultyOptions(), fetchTagOptions()])
+        .then(() => {
+            setIsFilterLoading(false);
+        })
+        .catch((error) => {
+            console.log('Error fetching data:', error);
+        });
     }, []);
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -90,16 +84,18 @@ export default function PageContent({ datasetList, organizations, setOrganizatio
                                     Clear all
                                 </Link>,
                             ]}
-                        >
-                            <Checkbox.Group value={organizations} onChange={(value) => (setOrganizations(value))}>
-                                <Space direction='vertical'>
-                                    {facultyOptions.map((faculty) => (
-                                        <Checkbox value={faculty.faculty_id}>
-                                            {`${faculty.faculty_short} (${faculty.faculty_name})`} <span style={{ color: '#00000073' }}>({faculty['Number of dataset(s)']})</span>
-                                        </Checkbox>
-                                    ))}
-                                </Space>
-                            </Checkbox.Group>
+                        > { isFilterLoading ? <Skeleton active paragraph={{ rows: 3 }} /> :
+                                <Checkbox.Group value={organizations} onChange={(value) => (setOrganizations(value))}>
+                                    <Space direction='vertical'>
+                                        {facultyOptions.map((faculty) => (
+                                            <Checkbox value={faculty.faculty_id}>
+                                                {`${faculty.faculty_short} (${faculty.faculty_name})`} 
+                                                <span style={{ color: '#00000073' }}> ({datasetList.filter((dataset) => (dataset.faculty_id === faculty.faculty_id)).length})</span>
+                                            </Checkbox>
+                                        ))}
+                                    </Space>
+                                </Checkbox.Group>
+                            }
                         </Card>
                         <Card 
                             title={<Space><TagOutlined />Tags</Space>} 
@@ -118,15 +114,18 @@ export default function PageContent({ datasetList, organizations, setOrganizatio
                                 </Link>,
                             ]}
                         >
-                            <Checkbox.Group value={tags} onChange={(value) => (setTags(value))}>
-                                <Space direction='vertical'>
-                                    {tagOptions.map((tag) => (
-                                        <Checkbox value={tag.tag_name}>
-                                            {tag.tag_name} <span style={{ color: '#00000073' }}>({tag['Number of dataset(s)']})</span>
-                                        </Checkbox>
-                                    ))}
-                                </Space>
-                            </Checkbox.Group>
+                            { isFilterLoading ? <Skeleton active paragraph={{ rows: 3 }} /> :
+                                <Checkbox.Group value={tags} onChange={(value) => (setTags(value))}>
+                                    <Space direction='vertical'>
+                                        {tagOptions.map((tag) => (
+                                            <Checkbox value={tag.tag_name}>
+                                                {tag.tag_name}
+                                                <span style={{ color: '#00000073' }}> ({datasetList.filter((dataset) => (dataset.tags.includes(tag.tag_name))).length})</span>
+                                            </Checkbox>
+                                        ))}
+                                    </Space>
+                                </Checkbox.Group>
+                            }
                         </Card>
                         <Card 
                             title={<Space><TranslationOutlined />Data Languages</Space>}
@@ -145,43 +144,39 @@ export default function PageContent({ datasetList, organizations, setOrganizatio
                                 </Link>,
                             ]}
                         >
-                            <Checkbox.Group value={dataLanguages} onChange={(value) => (setDataLanguages(value))}>
-                                <Space direction='vertical'>
-                                    <Checkbox value='English'>
-                                        English <span style={{ color: '#00000073' }}>
-                                            ({
-                                                dataLangOptions.find((lang) => lang.data_lang === 'English')
-                                                    ? dataLangOptions.find((lang) => lang.data_lang === 'English')['Number of dataset(s)']
-                                                    : 0
-                                            })
-                                        </span>
-                                    </Checkbox>
-                                    <Checkbox value='Thai'>
-                                        Thai <span style={{ color: '#00000073' }}>
-                                            ({
-                                                dataLangOptions.find((lang) => lang.data_lang === 'Thai')
-                                                    ? dataLangOptions.find((lang) => lang.data_lang === 'Thai')['Number of dataset(s)']
-                                                    : 0
-                                            })
-                                        </span>
-                                    </Checkbox>
-                                    <Checkbox value='Others'>
-                                        Others <span style={{ color: '#00000073' }}>
-                                            ({
-                                                dataLangOptions.find((lang) => lang.data_lang === 'Others')
-                                                    ? dataLangOptions.find((lang) => lang.data_lang === 'Others')['Number of dataset(s)']
-                                                    : 0
-                                            })
-                                        </span>
-                                    </Checkbox>
-                                </Space>
-                            </Checkbox.Group>
+                            { isFilterLoading ? <Skeleton active paragraph={{ rows: 3 }} /> : 
+                                <Checkbox.Group value={dataLanguages} onChange={(value) => (setDataLanguages(value))}>
+                                    <Space direction='vertical'>
+                                        <Checkbox value='English'>
+                                            English <span style={{ color: '#00000073' }}>
+                                            ({datasetList.filter((dataset) => (dataset.data_lang === 'English')).length})
+                                            </span>
+                                        </Checkbox>
+                                        <Checkbox value='Thai'>
+                                            Thai <span style={{ color: '#00000073' }}>
+                                            ({datasetList.filter((dataset) => (dataset.data_lang === 'Thai')).length})
+                                            </span>
+                                        </Checkbox>
+                                        <Checkbox value='Others'>
+                                            Others <span style={{ color: '#00000073' }}>
+                                            ({datasetList.filter((dataset) => (dataset.data_lang === 'Others')).length})
+                                            </span>
+                                        </Checkbox>
+                                    </Space>
+                                </Checkbox.Group>
+                            }
                         </Card>
                     </Space>
                 </Col>
                 <Col span={18}>
                     <Space direction='vertical' style={{ display: 'flex' }}>
-                        { currentData.length === 0 ? <Empty /> :
+                        {isLoading ? 
+                            Array.from({ length: 10 }).map((_, index) => (
+                                <Card key={index}>
+                                    <Skeleton active paragraph={{ rows: 2 }} />
+                                </Card>
+                            )) : 
+                            currentData.length === 0 ? <Empty style={{ margin: '50px 0' }} /> :
                             currentData.map((dataset) => (
                                 <DatasetCard key={dataset.dataset_id} dataset={dataset} />
                             ))

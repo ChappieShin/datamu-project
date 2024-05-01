@@ -39,7 +39,7 @@ export default function DataViz({ params }) {
     return (
         isLoading ? <Spin fullscreen /> :
         <>
-            <PageHeader dataset_id={params.id} />
+            <PageHeader dataset={datasetData} />
             <PageContent dataset={datasetData} />
         </>
     );

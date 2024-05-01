@@ -1,23 +1,11 @@
 'use client'
-
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
-import axios from 'axios';
-import { Layout, Row, Col, Space, Typography, Breadcrumb, Input, Select, message } from 'antd';
+import { Layout, Row, Col, Space, Typography, Breadcrumb, Input, Select } from 'antd';
 
 const { Header } = Layout;
 const { Title, Text } = Typography;
 const { Search } = Input;
 
-export default function PageHeader({ datasetList, setSearchKeyword, permissionOption, setPermissionOption, sortOption, setSortOption }) {
-    const searchParams = useSearchParams();
-    const search_keyword = searchParams.get('search_keyword');
-
-    // useEffect(() => {
-    //     if (search_keyword) {
-    //         handleSearchDataset(search_keyword);
-    //     }
-    // }, [search_keyword]);
+export default function PageHeader({ datasetList, searchKeyword, handleSearch, permissionOption, setPermissionOption, sortOption, setSortOption }) {
 
     return (
         <Header style={{ height: 'auto', padding: '24px', background: 'white' }}>
@@ -31,7 +19,8 @@ export default function PageHeader({ datasetList, setSearchKeyword, permissionOp
                                 placeholder='Search datasets...'
                                 allowClear
                                 enterButton
-                                onSearch={(value) => (setSearchKeyword(value))}
+                                defaultValue={searchKeyword}
+                                onSearch={(value) => (handleSearch(value))}
                                 style={{ width: '700px' }}
                             />
                         </Row>

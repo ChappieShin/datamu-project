@@ -24,7 +24,7 @@ export default function Home() {
     return ( status === 'authenticated' &&
         <>
             <PageHeader user_id={session.user.name} />
-            <PageContent />
+            <PageContent user_id={session.user.name} />
         </>
     );
 }
