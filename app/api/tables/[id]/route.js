@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import MySQL_DB from '@/utils/mysql-db';
 import Mongo_DB from '@/utils/mongo-db';
 
@@ -35,7 +37,7 @@ export async function GET(request, { params }) {
 
 export async function PUT(request, { params }) {
     const body = await request.json();
-    const { table_name, description, file_name, file_format, data } = body;
+    const { table_name, description, file_name, file_format, data, dataset_id, user_id } = body;
     
     const table = !data ?
     {
@@ -74,14 +76,25 @@ export async function PUT(request, { params }) {
             await client.close();
         }
 
+        const log = { dataset_id: dataset_id, user_id: user_id, status: 'Success', detail: 'Edit data table info' };
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/logs?log_type=EDIT`, log);
+
         return Response.json({ error: false, message: `Successfully edited a data table (table_id: ${params.id})` });
     } catch (error) {
         console.error('Error running query', error);
+
+        const log = { dataset_id: dataset_id, user_id: user_id, status: 'Failed', detail: `Edit data table info ${error.message}` };
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/logs?log_type=EDIT`, log);
+
         return Response.json({ error: true, message: error.message });
     }
 }
 
 export async function DELETE(request, { params }) {
+    const { searchParams } = new URL (request.url);
+    const user_id = searchParams.get('user_id');
+    const dataset_id = searchParams.get('dataset_id');
+
     const query_delete = `DELETE FROM DataTables WHERE table_id = ${params.id}`;
     const query_check = `SELECT * FROM DataTables WHERE dataset_id = (SELECT dataset_id FROM DataTables WHERE table_id = ${params.id})`;
     const query_update = `UPDATE Datasets SET modified_date = NOW() WHERE dataset_id = (SELECT dataset_id FROM DataTables WHERE table_id = ${params.id})`;
@@ -109,9 +122,16 @@ export async function DELETE(request, { params }) {
         await database.collection(params.id).drop();
         await client.close();
 
+        const log = { dataset_id: dataset_id, user_id: user_id, status: 'Success', detail: 'Delete data table' };
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/logs?log_type=EDIT`, log);
+
         return Response.json({ error: false, message: `Successfully deleted a data table (table_id: ${params.id})` });
     } catch (error) {
         console.error('Error running query', error);
+
+        const log = { dataset_id: dataset_id, user_id: user_id, status: 'Failed', detail: `Delete data table: ${error.message}` };
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/logs?log_type=EDIT`, log);
+
         return Response.json({ error: true, message: error.message });
     }
 }

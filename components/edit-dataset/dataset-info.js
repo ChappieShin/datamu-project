@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import axios from 'axios';
 
@@ -9,6 +10,7 @@ import { gold } from '@ant-design/colors';
 const { Text } = Typography;
 
 export default function DatasetInfo({ dataset }) {
+    const { data: session, status } = useSession();
     const [form] = Form.useForm();
     const [buttonLoading, setButtonLoading] = useState(false);
 
@@ -48,7 +50,7 @@ export default function DatasetInfo({ dataset }) {
     }
 
     const handleFinish = async (values) => {
-        const body = { ...values, 
+        const body = { ...values, user_id: session.user.name,
             tag_ids: values.tag_ids.map((tag_name) => {
                 const tag = tagOptions.find((tag) => (tag.tag_name === tag_name));
                 return tag ? tag.tag_id : null;

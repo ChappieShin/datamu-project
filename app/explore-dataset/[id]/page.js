@@ -47,7 +47,7 @@ export default function Dataset({ params }) {
 
     const fetchLogView = async () => {
         try {
-            const body = { dataset_id: params.id, user_id: session.user.name }
+            const body = { dataset_id: params.id, user_id: session.user.name, status: 'Success' };
             await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/logs?log_type=VIEW`, body);
         } catch (error) {
             console.log('Error', error);

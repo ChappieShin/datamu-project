@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import axios from 'axios';
 import { Row, Col, Space, Typography, Button, Input } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { AuditOutlined, PlusOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
 const { Search } = Input;
@@ -39,6 +39,9 @@ export default function TableHeader({ setDatasetList }) {
                         allowClear
                         onSearch={(value) => (handleSearchDataset(value))}
                     />
+                    <Link href='/dataset-management/logs'>
+                        <Button icon={<AuditOutlined />}>View Logs</Button>
+                    </Link>
                     <Link href='/my-dataset/create'>
                         <Button type='primary' icon={<PlusOutlined />}>Create Dataset</Button>
                     </Link>

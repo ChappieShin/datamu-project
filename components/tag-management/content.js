@@ -59,6 +59,7 @@ export default function PageContent() {
             title: 'Tag Name',
             dataIndex: 'tag_name',
             key: 'tag_name',
+            align: 'center',
             render: (_, record) => (<StringTag name={record.tag_name} />),
             sorter: {
                 compare: (a, b) => (a.tag_name.toLowerCase().localeCompare(b.tag_name.toLowerCase())),
@@ -69,6 +70,7 @@ export default function PageContent() {
             title: 'Number of Datasets',
             dataIndex: 'Number of dataset(s)',
             key: 'Number of dataset(s)',
+            align: 'center',
             sorter: {
                 compare: (a, b) => (a['Number of dataset(s)'] - b['Number of dataset(s)']),
                 multiple: 3

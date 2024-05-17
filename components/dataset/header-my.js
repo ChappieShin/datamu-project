@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
 
 import { Layout, Space, Typography, Breadcrumb, Tabs, Button, Popconfirm, message } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
@@ -12,11 +13,12 @@ const { Header } = Layout;
 const { Title, Paragraph } = Typography;
 
 export default function PageHeader({ dataset, tabs, onTabChange }) {
+    const { data: session, status } = useSession();
     const router = useRouter();
 
     const handleDeleteDataset = async (dataset_id) => {
         try {
-            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets/${dataset_id}`);
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets/${dataset_id}?user_id=${session.user.name}`);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);

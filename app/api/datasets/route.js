@@ -150,10 +150,17 @@ export async function POST(request) {
         await Promise.all(promises_table);
 
         db.release();
-
+        
+        const log = { dataset_id: results.insertId, user_id: owner_id, status: 'Success' };
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/logs?log_type=CREATE`, log);
+        
         return Response.json({ error: false, message: `Successfully created a new dataset (dataset_id: ${results.insertId})`, data: results });
     } catch (error) {
         console.error('Error running query', error);
+
+        const log = { user_id: owner_id, status: 'Failed', detail: error.message };
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/logs?log_type=CREATE`, log);
+
         return Response.json({ error: true, message: error.message });
     }
 }

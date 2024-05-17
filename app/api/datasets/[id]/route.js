@@ -51,7 +51,7 @@ export async function GET(request, { params }) {
 
 export async function PUT(request, { params }) {
     const body = await request.json();
-    const { title, subtitle, description, data_lang, permission_type, tag_ids } = body;
+    const { title, subtitle, description, data_lang, permission_type, tag_ids, user_id } = body;
     const dataset = {
         title: title,
         subtitle: subtitle,
@@ -80,17 +80,32 @@ export async function PUT(request, { params }) {
 
         if (results.affectedRows === 0) {
             db.release();
+            
+            const log = { dataset_id: params.id, user_id: user_id, status: 'Failed', detail: `Edit dataset info: dataset does not exist` };
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/logs?log_type=EDIT`, log);
+            
             return Response.json({ error: true, message: `Unable to edit (dataset_id: ${params.id} does not exist)` });
         }
         db.release();
+
+        const log = { dataset_id: params.id, user_id: user_id, status: 'Success', detail: 'Edit dataset info' };
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/logs?log_type=EDIT`, log);
+
         return Response.json({ error: false, message: 'Successfully edited dataset info' });
     } catch (error) {
         console.error('Error running query', error);
+
+        const log = { dataset_id: params.id, user_id: user_id, status: 'Failed', detail: `Edit dataset info: ${error.message}` };
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/logs?log_type=EDIT`, log);
+
         return Response.json({ error: true, message: error.message });
     }
 }
 
 export async function DELETE(request, { params }) {
+    const { searchParams } = new URL (request.url);
+    const user_id = searchParams.get('user_id');
+    
     const query_dataset = `DELETE FROM Datasets WHERE dataset_id = ${params.id}`;
     const query_table = `DELETE FROM DataTables WHERE dataset_id = ${params.id}`;
     const query_tag = `DELETE FROM Datasets_Tags WHERE dataset_id = ${params.id}`;
@@ -120,10 +135,17 @@ export async function DELETE(request, { params }) {
         
         db.release();
         await client.close();
+
+        const log = { dataset_id: params.id, user_id: user_id, status: 'Success' };
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/logs?log_type=DELETE`, log);
         
         return Response.json({ error: false, message: `Successfully deleted a dataset (dataset_id: ${params.id})` });
     } catch (error) {
         console.error('Error running query', error);
+
+        const log = { dataset_id: params.id, user_id: user_id, status: 'Failed', detail: error.message };
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/logs?log_type=DELETE`, log);
+
         return Response.json({ error: true, message: error.message });
     }
 }

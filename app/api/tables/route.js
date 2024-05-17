@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import MySQL_DB from '@/utils/mysql-db';
 import Mongo_DB from '@/utils/mongo-db';
 
@@ -44,7 +46,7 @@ export async function GET(request) {
 
 export async function POST(request) {
     const body = await request.json();
-    const { table_name, description, file_name, file_format, dataset_id, data } = body;
+    const { table_name, description, file_name, file_format, dataset_id, data, user_id } = body;
     const table = {
         table_name: table_name,
         description: description,
@@ -66,9 +68,16 @@ export async function POST(request) {
         db.release();
         await client.close();
 
+        const log = { dataset_id: dataset_id, user_id: user_id, status: 'Success', detail: 'Add new data table' };
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/logs?log_type=EDIT`, log);
+
         return Response.json({ error: false, message: `Successfully added a new data table (table_id: ${results.insertId})` })
     } catch (error) {
         console.error('Error running query', error);
+
+        const log = { dataset_id: dataset_id, user_id: user_id, status: 'Failed', detail: `Add new data table: ${error.message}` };
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/logs?log_type=EDIT`, log);
+
         return Response.json({ error: true, message: error.message });
     }
 }

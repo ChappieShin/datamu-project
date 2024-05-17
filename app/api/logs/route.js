@@ -1,22 +1,9 @@
 import MySQL_DB from '@/utils/mysql-db';
 
 export async function GET(request) {
-    const { searchParams } = new URL (request.url);
-    const log_type = searchParams.get('log_type');
-
-    const query = log_type === 'VIEW' ? 
-                   `SELECT DATE(log_date) AS 'view_date', COUNT(log_id) AS 'Number of view(s)'
-                   FROM DatasetLogs
-                   WHERE log_type = 'VIEW' AND status = 'Success'
-                   GROUP BY view_date
-                   ORDER BY view_date` :
-                   log_type === 'EXPORT' ?
-                    `SELECT detail AS 'export_format', DATE(log_date) AS 'export_date', COUNT(log_id) AS 'Number of export(s)'
-                    FROM DatasetLogs
-                    WHERE log_type = 'EXPORT' AND status = 'Success'
-                    GROUP BY export_format, export_date
-                    ORDER BY export_date` :
-                    undefined;
+    const query = `SELECT log_id, log_date, detail, log_type, status, fname, lname, role, dataset_id
+                    FROM DatasetLogs dl 
+                    JOIN Users u ON dl.user_id = u.user_id`;
 
     try {
         const db = await MySQL_DB();
@@ -39,13 +26,11 @@ export async function POST(request) {
     try {
         const db = await MySQL_DB();
 
-        if (log_type === 'VIEW') {
-            await db.query(query, { ...body, log_type: log_type, status: 'Success' });
-        }
-        else if (log_type === 'EXPORT') {
+        if (log_type) {
             await db.query(query, { ...body, log_type: log_type });
         }
         db.release();
+
         return Response.json({ error: false, message: `Successfully logged ${log_type} (log_id: ${results.insertId})` }); 
     } catch (error) {
         console.error('Error running query', error);

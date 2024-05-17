@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import axios from 'axios';
 import _ from 'lodash';
@@ -18,6 +19,7 @@ const { Content } = Layout;
 const { Text } = Typography;
 
 export default function PageContent() {
+    const { data: session, status } = useSession();
     const [datasetList, setDatasetList] = useState([]);
     const [facultyOptions, setFacultyOptions] = useState([]);
     const [tagOptions, setTagOptions] = useState([]);
@@ -61,7 +63,7 @@ export default function PageContent() {
 
     const handleDeleteDataset = async (dataset_id) => {
         try {
-            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets/${dataset_id}`);
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets/${dataset_id}?user_id=${session.user.name}`);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);
@@ -202,6 +204,7 @@ export default function PageContent() {
             title: 'Tags',
             dataIndex: 'tags',
             key: 'tags',
+            align: 'center',
             render: (_, record) => (
                 <Space direction='vertical'>
                     {record.tags && record.tags.split(',').map((tag) => (<StringTag name={tag} />))}
@@ -215,6 +218,7 @@ export default function PageContent() {
             title: 'Data Language',
             dataIndex: 'data_lang',
             key: 'data_lang',
+            align: 'center',
             filters: [
                 {text: 'English', value: 'English'},
                 {text: 'Thai', value: 'Thai'},
@@ -226,6 +230,7 @@ export default function PageContent() {
             title: 'Permission',
             dataIndex: 'permission_type',
             key: 'permission_type',
+            align: 'center',
             filters: [
                 {text: 'Private', value: 'Private'},
                 {text: 'Public', value: 'Public'},

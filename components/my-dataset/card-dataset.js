@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
 
 import { Row, Col, Space, Typography, Card, Tooltip, Tag, Popconfirm, Badge, message } from 'antd';
 import { EditOutlined, DeleteOutlined, EyeOutlined, DownloadOutlined } from '@ant-design/icons';
@@ -11,9 +12,11 @@ import StringTag from '../etc/tag-string';
 const { Text } = Typography;
 
 export default function DatasetCard({ dataset, fetchDatasetList }) {
+    const { data: session, status } = useSession();
+    
     const handleDeleteDataset = async (dataset_id) => {
         try {
-            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets/${dataset_id}`);
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/datasets/${dataset_id}?user_id=${session.user.name}`);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);

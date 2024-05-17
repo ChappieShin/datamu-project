@@ -191,6 +191,7 @@ export default function PageContent() {
             title: 'Role',
             dataIndex: 'role',
             key: 'role',
+            align: 'center',
             filters: [
                 {text: 'Admin', value: 'Admin'},
                 {text: 'Staff', value: 'Staff'}

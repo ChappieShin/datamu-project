@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import axios from 'axios';
 
@@ -11,6 +12,7 @@ import * as XLSX from 'xlsx';
 const { Title, Text } = Typography;
 
 export default function DataTable({ dataset, fetchDatasetData }) {
+    const { data: session, status } = useSession();
     const [form] = Form.useForm();
     const [formAddTable] = Form.useForm();
 
@@ -29,10 +31,12 @@ export default function DataTable({ dataset, fetchDatasetData }) {
             file_format: data_format,
             table_type: 'original',
             dataset_id: dataset.dataset_id,
+            user_id: session.user.name,
             data: data_format === 'csv' ? await parseCSVFile(values.data_file.file) : await parseExcelFile(values.data_file.file, values.sheet_name)
         };
 
         try {
+            setButtonLoading(true);
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/tables`, table);
             const data = response.data;
             if (!data.error) {
@@ -46,6 +50,8 @@ export default function DataTable({ dataset, fetchDatasetData }) {
             }
         } catch (error) {
             console.log('Error', error);
+        } finally {
+            setButtonLoading(false);
         }
     };
 
@@ -76,7 +82,9 @@ export default function DataTable({ dataset, fetchDatasetData }) {
         const table = !data_file ? 
         {
             table_name: form.getFieldValue(['table_name', table_id]),
-            description: form.getFieldValue(['description', table_id])
+            description: form.getFieldValue(['description', table_id]),
+            dataset_id: dataset.dataset_id,
+            user_id: session.user.name,
         } :
         {
             table_name: form.getFieldValue(['table_name', table_id]),
@@ -85,6 +93,8 @@ export default function DataTable({ dataset, fetchDatasetData }) {
             file_size: data_file.file.size,
             file_format: data_format,
             table_type: 'original',
+            dataset_id: dataset.dataset_id,
+            user_id: session.user.name,
             data: data_format === 'csv' ? await parseCSVFile(data_file.file) : await parseExcelFile(data_file.file, sheet_name)
         };
         
@@ -108,7 +118,7 @@ export default function DataTable({ dataset, fetchDatasetData }) {
 
     const handleDeleteDataTable = async (table_id) => {
         try {
-            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/tables/${table_id}`);
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/tables/${table_id}?user_id=${session.user.name}&dataset_id=${dataset.dataset_id}`);
             const data = response.data;
             if (!data.error) {
                 message.success(data.message);
@@ -265,7 +275,6 @@ export default function DataTable({ dataset, fetchDatasetData }) {
                             type: record.file_format
                         }]}
                         itemRender={(originNode, file) => {
-                            console.log(file)
                             if (file.name && file.type) {
                                 const file_name = file.name.length > 20 ? `${file.name.slice(0, 20)}...` : file.name;
                                 const icon = (file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || record.file_type === 'xlsx') ? <FileExcelOutlined /> : <FileTextOutlined />;
@@ -446,7 +455,7 @@ export default function DataTable({ dataset, fetchDatasetData }) {
                     <Form.Item style={{ textAlign: 'right', marginBottom: 0 }}>
                         <Space>
                             <Button onClick={handleAddTableCancel}>Cancel</Button>
-                            <Button type='primary' htmlType='submit'>Add</Button>
+                            <Button type='primary' htmlType='submit' loading={buttonLoading}>Add</Button>
                         </Space>
                     </Form.Item>
                 </Form>
