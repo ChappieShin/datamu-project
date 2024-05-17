@@ -109,13 +109,11 @@ export async function DELETE(request, { params }) {
     const query_dataset = `DELETE FROM Datasets WHERE dataset_id = ${params.id}`;
     const query_table = `DELETE FROM DataTables WHERE dataset_id = ${params.id}`;
     const query_tag = `DELETE FROM Datasets_Tags WHERE dataset_id = ${params.id}`;
-    const query_log = `DELETE FROM DatasetLogs WHERE dataset_id = ${params.id}`;
     const query_table_ids = `SELECT table_id FROM DataTables WHERE dataset_id = ${params.id}`;
 
     try {
         const db = await MySQL_DB();
         await db.query(query_tag);
-        await db.query(query_log);
         
         const [results_table_ids] = await db.query(query_table_ids);
         const [results_table] = await db.query(query_table);
